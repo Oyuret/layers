@@ -9,22 +9,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->graphicsView->setScene(scene);
 
-    /*QBrush red(Qt::red);
-    QBrush black(Qt::black);
-
-    QPen blackPen(Qt::black);
-
-    QGraphicsRectItem* rect = scene->addRect(0,0,50,50,blackPen,red);
-    scene->addRect(-100,0,50,50,blackPen,red);
-    scene->addRect(0,-100,50,50,blackPen,red);
-    scene->addRect(100,100,50,50,blackPen,red);
-    scene->addRect(1000,0,50,50,blackPen,red);
-    scene->addRect(0,1000,50,50,blackPen,red);
-    scene->addRect(1000,1000,50,50,blackPen,red);*/
+    connect(&test,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
 
     for(int i=0; i<10; ++i) {
         QString name = QString("B").append(QString::number(i));
-        BlockItem* item = new BlockItem(name, 60, 60);
+        Node* item = new Node(name);
         item->setX(qrand() % ((500 + 1) - (-500)) + (-500));
         item->setY(qrand() % ((500 + 1) - (-500)) + (-500));
 
@@ -36,4 +25,14 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_setStatusMsg(QString msg)
+{
+    statusBar() -> showMessage(msg);
+}
+
+void MainWindow::on_cycleRemButton_clicked()
+{
+    test.run();
 }

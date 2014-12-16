@@ -168,16 +168,16 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="altDummyNodesButton">
+           <widget class="QPushButton" name="altBackEdgeButton">
             <property name="text">
-             <string>Introduce Dummy Nodes</string>
+             <string>Introduce ibed/obed nodes</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="altBackEdgeButton">
+           <widget class="QPushButton" name="altDummyNodesButton">
             <property name="text">
-             <string>Introduce ibed/obed nodes</string>
+             <string>Introduce Dummy Nodes</string>
             </property>
            </widget>
           </item>

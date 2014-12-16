@@ -11,6 +11,7 @@ public:
     BlockItem(QString name, int width, int height);
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *);
+    virtual ~BlockItem(){}
 
 private:
     QString name;

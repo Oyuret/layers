@@ -15,11 +15,19 @@ TEMPLATE = app
 SOURCES += src/blockitem.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/mygraphicsview.cpp
+    src/mygraphicsview.cpp \
+    src/abstract_node.cpp \
+    src/node.cpp \
+    src/algorithm.cpp \
+    src/graph.cpp
 
 HEADERS  += include/blockitem.h \
     include/mainwindow.h \
-    include/mygraphicsview.h
+    include/mygraphicsview.h \
+    include/abstract_node.h \
+    include/node.h \
+    include/algorithm.h \
+    include/graph.h
 
 FORMS    += ui/mainwindow.ui
 

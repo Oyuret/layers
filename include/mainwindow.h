@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QWheelEvent>
 #include <QGraphicsScene>
-#include "blockitem.h"
+#include "node.h"
+#include "algorithm.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,8 +20,20 @@ public:
     ~MainWindow();
 
 private:
+
+
+
+    // The algorithms
+    Algorithm test;
+
+
     Ui::MainWindow * ui;
     QGraphicsScene * scene;
+
+public slots:
+    void on_setStatusMsg(QString msg);
+private slots:
+    void on_cycleRemButton_clicked();
 };
 
 #endif // MAINWINDOW_H
