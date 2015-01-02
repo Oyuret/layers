@@ -19,7 +19,9 @@ SOURCES += src/blockitem.cpp \
     src/abstract_node.cpp \
     src/node.cpp \
     src/algorithm.cpp \
-    src/graph.cpp
+    src/graph.cpp \
+    src/xml_parser.cpp \
+    src/cfg.cpp
 
 HEADERS  += include/blockitem.h \
     include/mainwindow.h \
@@ -27,7 +29,9 @@ HEADERS  += include/blockitem.h \
     include/abstract_node.h \
     include/node.h \
     include/algorithm.h \
-    include/graph.h
+    include/graph.h \
+    include/xml_parser.h \
+    include/cfg.h
 
 FORMS    += ui/mainwindow.ui
 

@@ -27,3 +27,18 @@ void BlockItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setPen(Qt::black);
     painter->drawText(boundingRect().translated(2,5), name);
 }
+
+QPointF BlockItem::getInport()
+{
+    QPointF position = pos();
+    position.setX(position.x() + (width/2));
+    return position;
+}
+
+QPointF BlockItem::getOutport()
+{
+    QPointF position = pos();
+    position.setX(position.x() + (width/2));
+    position.setY(position.y() + height);
+    return position;
+}

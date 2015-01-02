@@ -4,8 +4,11 @@
 #include <QMainWindow>
 #include <QWheelEvent>
 #include <QGraphicsScene>
+#include <QFileDialog>
 #include "node.h"
 #include "algorithm.h"
+#include "graph.h"
+#include "xml_parser.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,7 +24,8 @@ public:
 
 private:
 
-
+    Graph graph;
+    XML_Parser parser;
 
     // The algorithms
     Algorithm test;
@@ -34,6 +38,7 @@ public slots:
     void on_setStatusMsg(QString msg);
 private slots:
     void on_cycleRemButton_clicked();
+    void on_actionLoad_XML_triggered();
 };
 
 #endif // MAINWINDOW_H

@@ -10,15 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(scene);
 
     connect(&test,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
-
-    for(int i=0; i<10; ++i) {
-        QString name = QString("B").append(QString::number(i));
-        Node* item = new Node(name);
-        item->setX(qrand() % ((500 + 1) - (-500)) + (-500));
-        item->setY(qrand() % ((500 + 1) - (-500)) + (-500));
-
-        scene->addItem(item);
-    }
+    connect(&parser,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
 
 }
 
@@ -35,4 +27,19 @@ void MainWindow::on_setStatusMsg(QString msg)
 void MainWindow::on_cycleRemButton_clicked()
 {
     test.run();
+}
+
+void MainWindow::on_actionLoad_XML_triggered()
+{
+    scene->clear();
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", "Files (*.xml)", NULL);
+    CFG cfg = parser.getCFG(fileName);
+
+    for(Block block : cfg.getBlocks()) {
+        Node* node = new Node(block.getName());
+        node->setX(qrand() % ((500 + 1) - (-500)) + (-500));
+        node->setY(qrand() % ((500 + 1) - (-500)) + (-500));
+        scene->addItem(node);
+    }
 }
