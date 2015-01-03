@@ -8,6 +8,11 @@ BlockItem::BlockItem(QString name, int width, int height)
     this->height = height;
 }
 
+const QString BlockItem::getName() const
+{
+    return name;
+}
+
 QRectF BlockItem::boundingRect() const
 {
     return QRectF(0, 0, width, height);

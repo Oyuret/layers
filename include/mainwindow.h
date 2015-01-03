@@ -6,7 +6,8 @@
 #include <QGraphicsScene>
 #include <QFileDialog>
 #include "node.h"
-#include "algorithm.h"
+#include "edgeitem.h"
+#include "cyclereduction.h"
 #include "graph.h"
 #include "xml_parser.h"
 
@@ -28,7 +29,7 @@ private:
     XML_Parser parser;
 
     // The algorithms
-    Algorithm test;
+    CycleReduction removeCycles;
 
 
     Ui::MainWindow * ui;

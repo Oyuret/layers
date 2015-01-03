@@ -1,8 +1,7 @@
 #include "include/node.h"
 
-Node::Node(QString name) :
-    BlockItem(name,50,50),
-    AbstractNode()
+Node::Node(QString name, int width, int height) :
+    AbstractNode(name, width, height)
 {
 
 }

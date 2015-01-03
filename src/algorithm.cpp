@@ -4,7 +4,7 @@ Algorithm::Algorithm()
 {
 }
 
-void Algorithm::run()
+void Algorithm::run(Graph& graph)
 {
     emit setStatusMsg("En Test");
 }

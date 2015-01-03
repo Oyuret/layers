@@ -111,6 +111,7 @@ void XML_Parser::createCFG(QList<QMap<QString, QString>> &blocks, QString start,
 
         if(block.getName().compare(start) == 0) {
             cfg.addStartBlock(block);
+            cfg.addBlock(block);
         } else {
             cfg.addBlock(block);
         }

@@ -1,12 +1,11 @@
 #ifndef NODE_H
 #define NODE_H
 #include "abstract_node.h"
-#include "blockitem.h"
 
-class Node : public BlockItem, AbstractNode
+class Node : public AbstractNode
 {
 public:
-    Node(QString name);
+    Node(QString name, int width, int height);
     virtual ~Node(){}
 
 };

@@ -21,7 +21,10 @@ SOURCES += src/blockitem.cpp \
     src/algorithm.cpp \
     src/graph.cpp \
     src/xml_parser.cpp \
-    src/cfg.cpp
+    src/cfg.cpp \
+    src/abstract_edge.cpp \
+    src/edgeitem.cpp \
+    src/cyclereduction.cpp
 
 HEADERS  += include/blockitem.h \
     include/mainwindow.h \
@@ -31,7 +34,10 @@ HEADERS  += include/blockitem.h \
     include/algorithm.h \
     include/graph.h \
     include/xml_parser.h \
-    include/cfg.h
+    include/cfg.h \
+    include/abstract_edge.h \
+    include/edgeitem.h \
+    include/cyclereduction.h
 
 FORMS    += ui/mainwindow.ui
 
