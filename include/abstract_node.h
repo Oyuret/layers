@@ -1,6 +1,6 @@
 #ifndef ABSTRACTNODE_H
 #define ABSTRACTNODE_H
-#include <list>
+#include <QList>
 #include "blockitem.h"
 
 using namespace std;
@@ -12,15 +12,15 @@ public:
     AbstractNode(QString name, int width, int height);
     void addSuccessor(AbstractNode* successor);
     void addPredecessor(AbstractNode* predecessor);
-    list<AbstractNode*>& getSuccessors();
-    list<AbstractNode*>& getPredecessors();
+    QList<AbstractNode*>& getSuccessors();
+    QList<AbstractNode*>& getPredecessors();
     void removePredecessor(AbstractNode* node);
     void removeSuccessor(AbstractNode* node);
     virtual ~AbstractNode(){}
 
 private:
-    list<AbstractNode*> successors;
-    list<AbstractNode*> predecessors;
+    QList<AbstractNode*> successors;
+    QList<AbstractNode*> predecessors;
 };
 
 #endif // ABSTRACTNODE_H

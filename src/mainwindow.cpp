@@ -77,3 +77,8 @@ void MainWindow::on_actionLoad_XML_triggered()
 
     graph.setStart(graph.getNode(cfg.getStart().getName()));
 }
+
+void MainWindow::on_layeringButton_clicked()
+{
+    assignLayers.run(graph);
+}

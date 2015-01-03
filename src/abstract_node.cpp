@@ -20,22 +20,22 @@ void AbstractNode::addPredecessor(AbstractNode *predecessor)
     predecessors.push_back(predecessor);
 }
 
-list<AbstractNode *> &AbstractNode::getSuccessors()
+QList<AbstractNode *> &AbstractNode::getSuccessors()
 {
     return successors;
 }
 
-list<AbstractNode *> &AbstractNode::getPredecessors()
+QList<AbstractNode *> &AbstractNode::getPredecessors()
 {
     return predecessors;
 }
 
 void AbstractNode::removePredecessor(AbstractNode *node)
 {
-    predecessors.remove(node);
+    predecessors.removeOne(node);
 }
 
 void AbstractNode::removeSuccessor(AbstractNode *node)
 {
-    successors.remove(node);
+    successors.removeOne(node);
 }

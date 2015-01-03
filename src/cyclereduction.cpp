@@ -6,6 +6,9 @@ CycleReduction::CycleReduction()
 
 void CycleReduction::run(Graph &graph)
 {
+
+    emit setStatusMsg("Reducing crossings...");
+
     //reset
     visited.clear();
     active.clear();
@@ -14,13 +17,15 @@ void CycleReduction::run(Graph &graph)
     AbstractNode* start = graph.getStart();
 
     // Start by reversing all incoming edges to start
-    list<AbstractNode*> preds = start->getPredecessors();
+    QList<AbstractNode*> preds = start->getPredecessors();
     for(AbstractNode* predecessor : preds) {
         graph.reverseEdge(predecessor,start);
     }
 
     // Start reversing edges
     DFS(start, graph);
+
+    emit setStatusMsg("Reducing crossings... Done!");
 
 }
 
@@ -41,7 +46,7 @@ void CycleReduction::DFS(AbstractNode *node, Graph& graph)
         visited.insert(node);
         active.insert(node);
 
-        list<AbstractNode*> successors = node->getSuccessors();
+        QList<AbstractNode*> successors = node->getSuccessors();
         for(AbstractNode* succ : successors) {
             if(active.contains(succ)) {
                 graph.reverseEdge(node,succ);

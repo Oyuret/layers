@@ -64,13 +64,53 @@ QList<EdgeItem *> Graph::getReversedEdges()
     return reversedEdges.values();
 }
 
+void Graph::setLayers(QLinkedList<QLinkedList<AbstractNode *> > layers)
+{
+    this->layers = layers;
+}
+
+void Graph::repaintLayers()
+{
+    qreal currentY(0);
+    for(QLinkedList<AbstractNode*> layer : layers) {
+
+        qreal currentX(0);
+        qreal maxHeightThisLayer(0);
+
+        for(AbstractNode* vertex : layer) {
+
+            // adjust the Y-position
+            vertex->setY(currentY);
+            if(maxHeightThisLayer < vertex->boundingRect().height()) {
+                maxHeightThisLayer = vertex->boundingRect().height();
+            }
+
+            // adjust the X-position
+            vertex->setX(currentX);
+            currentX = currentX + vertex->boundingRect().width() + 25;
+        }
+        currentY = currentY + maxHeightThisLayer + 25;
+    }
+
+    adjustAllEdges();
+}
+
 void Graph::clear()
 {
     nodes.clear();
     layers.clear();
+    edges.clear();
+    reversedEdges.clear();
 }
 
 void Graph::resetReversed()
 {
     reversedEdges.clear();
+}
+
+void Graph::adjustAllEdges()
+{
+    for(EdgeItem* edge : edges) {
+        edge->adjust();
+    }
 }

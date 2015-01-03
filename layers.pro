@@ -24,7 +24,8 @@ SOURCES += src/blockitem.cpp \
     src/cfg.cpp \
     src/abstract_edge.cpp \
     src/edgeitem.cpp \
-    src/cyclereduction.cpp
+    src/cyclereduction.cpp \
+    src/assignlayers.cpp
 
 HEADERS  += include/blockitem.h \
     include/mainwindow.h \
@@ -37,7 +38,8 @@ HEADERS  += include/blockitem.h \
     include/cfg.h \
     include/abstract_edge.h \
     include/edgeitem.h \
-    include/cyclereduction.h
+    include/cyclereduction.h \
+    include/assignlayers.h
 
 FORMS    += ui/mainwindow.ui
 
