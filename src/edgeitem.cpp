@@ -28,6 +28,7 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 void EdgeItem::adjust()
 {
+    prepareGeometryChange();
     QPointF sourcePoint = from->getOutport();
     QPointF destinationPoint = to->getInport();
 
@@ -60,7 +61,6 @@ void EdgeItem::adjust()
 
         arrow << arrowLine.p2() << destArrowP1 << destArrowP2;
     }
-    update();
 }
 
 void EdgeItem::reverse()
