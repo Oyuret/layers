@@ -9,6 +9,7 @@
 #include "edgeitem.h"
 #include "cyclereduction.h"
 #include "assignlayers.h"
+#include "insertdummynodes.h"
 #include "graph.h"
 #include "xml_parser.h"
 
@@ -32,6 +33,7 @@ private:
     // The algorithms
     CycleReduction removeCycles;
     AssignLayers assignLayers;
+    InsertDummyNodes insertDummyNodes;
 
 
     Ui::MainWindow * ui;
@@ -43,6 +45,7 @@ private slots:
     void on_cycleRemButton_clicked();
     void on_actionLoad_XML_triggered();
     void on_layeringButton_clicked();
+    void on_normalDummyNodesButton_clicked();
 };
 
 #endif // MAINWINDOW_H

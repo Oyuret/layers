@@ -21,6 +21,7 @@ public:
     void reverse();
     virtual ~EdgeItem(){}
 private:
+    QGraphicsLineItem line;
     QPolygonF arrow;
     QVector<QPointF> bends;
     QVector<QPointF> points;

@@ -39,3 +39,13 @@ void AbstractNode::removeSuccessor(AbstractNode *node)
 {
     successors.removeOne(node);
 }
+
+void AbstractNode::setLayer(int layer)
+{
+    this->layer = layer;
+}
+
+int AbstractNode::getLayer() const
+{
+    return layer;
+}

@@ -8,7 +8,7 @@ EdgeItem::EdgeItem(AbstractNode *from, AbstractNode *to, bool renderArrow) :
 
 QRectF EdgeItem::boundingRect() const
 {
-    return arrow.boundingRect();
+    return line.boundingRect().united(arrow.boundingRect());
 }
 
 void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -16,13 +16,13 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(widget)
     Q_UNUSED(option)
 
-    //painter->setClipRect(option->exposedRect);
+    painter->setClipRect(option->exposedRect);
     painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->setBrush(Qt::black);
 
 
-    painter->drawPolyline(points);
-    painter->drawPolygon(arrow);
+    painter->drawLine(line.line());
+    if(renderArrow) painter->drawPolygon(arrow);
 
 }
 
@@ -32,12 +32,13 @@ void EdgeItem::adjust()
     QPointF destinationPoint = to->getInport();
 
     //adjust the line
-    points.clear();
+    /*points.clear();
     points.push_back(from->getOutport());
     for(QPointF point : bends) {
         points.push_back(point);
     }
-    points.push_back(to->getInport());
+    points.push_back(to->getInport());*/
+    line.setLine(from->getOutport().x(),from->getOutport().y(),to->getInport().x(),to->getInport().y());
 
     // adjust the arrow
     if(renderArrow) {

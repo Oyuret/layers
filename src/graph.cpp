@@ -13,6 +13,16 @@ void Graph::addEdge(AbstractNode *from, AbstractNode *to, EdgeItem *edge)
 {
     QPair<AbstractNode*,AbstractNode*> pair(from,to);
     edges.insert(pair,edge);
+    from->addSuccessor(to);
+    to->addPredecessor(from);
+}
+
+void Graph::addReversedEdge(AbstractNode *from, AbstractNode *to, EdgeItem *edge)
+{
+    QPair<AbstractNode*,AbstractNode*> pair(from,to);
+    reversedEdges.insert(pair,edge);
+    from->addSuccessor(to);
+    to->addPredecessor(from);
 }
 
 void Graph::setStart(AbstractNode *node)
@@ -41,6 +51,17 @@ EdgeItem *Graph::getEdge(AbstractNode *from, AbstractNode *to)
     return edges.value(pair);
 }
 
+QList<EdgeItem *> Graph::getEdges()
+{
+    return edges.values();
+}
+
+EdgeItem *Graph::getReversedEdge(AbstractNode *from, AbstractNode *to)
+{
+    QPair<AbstractNode*, AbstractNode*> pair(from,to);
+    return reversedEdges.value(pair);
+}
+
 void Graph::reverseEdge(AbstractNode *from, AbstractNode *to)
 {
     from->removeSuccessor(to);
@@ -52,7 +73,6 @@ void Graph::reverseEdge(AbstractNode *from, AbstractNode *to)
     EdgeItem* edge = edges.value(pair);
     edge->reverse();
     edges.remove(pair);
-    addEdge(to,from,edge);
 
     //add it to the set of reversed edges
     QPair<AbstractNode*, AbstractNode*> pairReversed(to,from);
@@ -64,9 +84,14 @@ QList<EdgeItem *> Graph::getReversedEdges()
     return reversedEdges.values();
 }
 
-void Graph::setLayers(QLinkedList<QLinkedList<AbstractNode *> > layers)
+void Graph::setLayers(QList<QLinkedList<AbstractNode *> > layers)
 {
     this->layers = layers;
+}
+
+QList<QLinkedList<AbstractNode *> > &Graph::getLayers()
+{
+    return layers;
 }
 
 void Graph::repaintLayers()
@@ -108,9 +133,29 @@ void Graph::resetReversed()
     reversedEdges.clear();
 }
 
+void Graph::removeEdge(AbstractNode *from, AbstractNode *to)
+{
+    from->removeSuccessor(to);
+    to->removePredecessor(from);
+    QPair<AbstractNode*, AbstractNode*> toBeRemoved(from,to);
+    edges.remove(toBeRemoved);
+}
+
+void Graph::removeReversedEdge(AbstractNode *from, AbstractNode *to)
+{
+    from->removeSuccessor(to);
+    to->removePredecessor(from);
+    QPair<AbstractNode*, AbstractNode*> toBeRemoved(from,to);
+    reversedEdges.remove(toBeRemoved);
+}
+
 void Graph::adjustAllEdges()
 {
     for(EdgeItem* edge : edges) {
+        edge->adjust();
+    }
+
+    for(EdgeItem* edge : reversedEdges) {
         edge->adjust();
     }
 }

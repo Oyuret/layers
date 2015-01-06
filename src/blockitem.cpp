@@ -1,5 +1,4 @@
 #include "include/blockitem.h"
-static const qreal CORNER_RADIUS = 4.0f;
 
 BlockItem::BlockItem(QString name, int width, int height)
 {

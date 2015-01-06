@@ -18,10 +18,11 @@ public:
     QPointF getInport();
     QPointF getOutport();
 
-private:
+protected:
     QString name;
     int width;
     int height;
+    const qreal CORNER_RADIUS = 4.0f;
 
 };
 

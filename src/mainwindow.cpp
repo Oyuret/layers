@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(scene);
 
     connect(&removeCycles,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
+    connect(&assignLayers,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
+    connect(&insertDummyNodes,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&parser,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
 
 }
@@ -46,32 +48,15 @@ void MainWindow::on_actionLoad_XML_triggered()
         graph.addNode(node);
     }
 
-
-    // add all successors
-    for(Block block : cfg.getBlocks()) {
-        AbstractNode* node = graph.getNode(block.getName());
-        for(QString succ : block.getSuccessors()) {
-            AbstractNode* successor = graph.getNode(succ);
-            node->addSuccessor(successor);
-        }
-    }
-
-    // add all predecessors
-    for(Block block : cfg.getBlocks()) {
-        AbstractNode* node = graph.getNode(block.getName());
-        for(QString pred : block.getPredecessors()) {
-            AbstractNode* predecessor = graph.getNode(pred);
-            node->addPredecessor(predecessor);
-        }
-    }
-
     // add all edges
-    for(AbstractNode* node : graph.getNodes()) {
-        for(AbstractNode* successor: node->getSuccessors()) {
-           EdgeItem* edge = new EdgeItem(node,successor,true);
-           edge->adjust();
-           scene->addItem(edge);
-           graph.addEdge(node,successor,edge);
+    for(Block block : cfg.getBlocks()) {
+        AbstractNode* from = graph.getNode(block.getName());
+        for(QString succName : block.getSuccessors()) {
+            AbstractNode* to = graph.getNode(succName);
+            EdgeItem* edge = new EdgeItem(from,to,true);
+            edge->adjust();
+            scene->addItem(edge);
+            graph.addEdge(from,to,edge);
         }
     }
 
@@ -81,4 +66,11 @@ void MainWindow::on_actionLoad_XML_triggered()
 void MainWindow::on_layeringButton_clicked()
 {
     assignLayers.run(graph);
+}
+
+void MainWindow::on_normalDummyNodesButton_clicked()
+{
+    insertDummyNodes.run(graph,scene);
+    graph.repaintLayers();
+    scene->update(scene->sceneRect());
 }
