@@ -17,11 +17,11 @@ void AssignLayers::run(Graph &graph)
 
     QSet<AbstractNode*> U;
     QSet<AbstractNode*> Z;
-    QList<QLinkedList<AbstractNode*>> layers;
+    QList<QList<AbstractNode*>> layers;
 
     //add the first layer
     int currentLayer = 0;
-    layers.append(QLinkedList<AbstractNode*>());
+    layers.append(QList<AbstractNode*>());
     while(!vertices.isEmpty()) {
         AbstractNode* selected = nullptr;
         for(AbstractNode* v : vertices) {
@@ -38,7 +38,7 @@ void AssignLayers::run(Graph &graph)
             vertices.removeOne(selected);
         } else {
             currentLayer++;
-            layers.append(QLinkedList<AbstractNode*>());
+            layers.append(QList<AbstractNode*>());
             Z.unite(U);
         }
     }

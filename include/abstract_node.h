@@ -18,10 +18,15 @@ public:
     void removeSuccessor(AbstractNode* node);
     void setLayer(int layer);
     int getLayer() const;
+    int getPositionInLayer() const;
+    void setPositionInLayer(int position);
+    double getDownsweepWeight() const;
+    double getUpsweepWeight() const;
     virtual ~AbstractNode(){}
 
 private:
     int layer;
+    int positionInLayer;
     QList<AbstractNode*> successors;
     QList<AbstractNode*> predecessors;
 };

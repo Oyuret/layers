@@ -27,8 +27,8 @@ public:
     QList<EdgeItem *> getReversedEdges();
 
 
-    void setLayers(QList<QLinkedList<AbstractNode*>> layers);
-    QList<QLinkedList<AbstractNode*>>& getLayers();
+    void setLayers(QList<QList<AbstractNode*>> layers);
+    QList<QList<AbstractNode*>>& getLayers();
     void repaintLayers();
 
     void clear();
@@ -45,7 +45,7 @@ private:
 
     AbstractNode* start;
     QMap<QString,AbstractNode*> nodes;
-    QList<QLinkedList<AbstractNode*>> layers;
+    QList<QList<AbstractNode*>> layers;
     QMap<QPair<AbstractNode*,AbstractNode*>,EdgeItem*> edges;
     QMap<QPair<AbstractNode*,AbstractNode*>,EdgeItem*> reversedEdges;
 

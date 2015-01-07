@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&removeCycles,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&assignLayers,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&insertDummyNodes,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
+    connect(&reduceCrossings,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&parser,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
 
 }
@@ -71,6 +72,13 @@ void MainWindow::on_layeringButton_clicked()
 void MainWindow::on_normalDummyNodesButton_clicked()
 {
     insertDummyNodes.run(graph,scene);
+    graph.repaintLayers();
+    scene->update(scene->sceneRect());
+}
+
+void MainWindow::on_normalCrossRedButton_clicked()
+{
+    reduceCrossings.run(graph);
     graph.repaintLayers();
     scene->update(scene->sceneRect());
 }

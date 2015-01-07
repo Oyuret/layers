@@ -13,8 +13,8 @@ public:
     virtual void run(Graph &graph, QGraphicsScene* scene);
     virtual ~InsertDummyNodes() {}
 private:
-    void addDummies(QList<QLinkedList<AbstractNode*>>& layers, Graph& graph, QGraphicsScene* scene,QList<EdgeItem*> edges);
-    void addReversedDummies(QList<QLinkedList<AbstractNode*>>& layers, Graph& graph, QGraphicsScene* scene,QList<EdgeItem*> edges);
+    void addDummies(QList<QList<AbstractNode*>>& layers, Graph& graph, QGraphicsScene* scene,QList<EdgeItem*> edges);
+    void addReversedDummies(QList<QList<AbstractNode*>>& layers, Graph& graph, QGraphicsScene* scene,QList<EdgeItem*> edges);
 };
 
 #endif // INSERTDUMMYNODES_H

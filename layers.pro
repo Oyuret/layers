@@ -27,7 +27,8 @@ SOURCES += src/blockitem.cpp \
     src/cyclereduction.cpp \
     src/assignlayers.cpp \
     src/insertdummynodes.cpp \
-    src/dummynode.cpp
+    src/dummynode.cpp \
+    src/reducecrossings.cpp
 
 HEADERS  += include/blockitem.h \
     include/mainwindow.h \
@@ -43,7 +44,8 @@ HEADERS  += include/blockitem.h \
     include/cyclereduction.h \
     include/assignlayers.h \
     include/insertdummynodes.h \
-    include/dummynode.h
+    include/dummynode.h \
+    include/reducecrossings.h
 
 FORMS    += ui/mainwindow.ui
 

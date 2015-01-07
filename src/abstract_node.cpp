@@ -49,3 +49,43 @@ int AbstractNode::getLayer() const
 {
     return layer;
 }
+
+int AbstractNode::getPositionInLayer() const
+{
+    return positionInLayer;
+}
+
+void AbstractNode::setPositionInLayer(int position)
+{
+    positionInLayer = position;
+}
+
+double AbstractNode::getDownsweepWeight() const
+{
+    if(predecessors.size() == 0) {
+        return 0;
+    }
+
+    // sum the position of my predecessors
+    int positions = 0;
+    for(AbstractNode* predecessor : predecessors) {
+        positions += predecessor->getPositionInLayer();
+    }
+
+    return (double) positions/predecessors.size();
+}
+
+double AbstractNode::getUpsweepWeight() const
+{
+    if(successors.size()== 0) {
+        return getDownsweepWeight();
+    }
+
+    // sum the position of my successors
+    int positions = 0;
+    for(AbstractNode* successor : successors) {
+        positions += successor->getPositionInLayer();
+    }
+
+    return (double) positions/successors.size();
+}

@@ -17,7 +17,7 @@ void InsertDummyNodes::run(Graph& graph, QGraphicsScene *scene)
     emit setStatusMsg("Inserting dummy nodes... Done!");
 }
 
-void InsertDummyNodes::addDummies(QList<QLinkedList<AbstractNode *> > &layers, Graph &graph, QGraphicsScene* scene,QList<EdgeItem *> edges)
+void InsertDummyNodes::addDummies(QList<QList<AbstractNode *> > &layers, Graph &graph, QGraphicsScene* scene,QList<EdgeItem *> edges)
 {
     for(EdgeItem* edge : edges) {
         AbstractNode* u = edge->getFrom();
@@ -63,7 +63,7 @@ void InsertDummyNodes::addDummies(QList<QLinkedList<AbstractNode *> > &layers, G
     }
 }
 
-void InsertDummyNodes::addReversedDummies(QList<QLinkedList<AbstractNode *> > &layers, Graph &graph, QGraphicsScene *scene, QList<EdgeItem *> edges)
+void InsertDummyNodes::addReversedDummies(QList<QList<AbstractNode *> > &layers, Graph &graph, QGraphicsScene *scene, QList<EdgeItem *> edges)
 {
     for(EdgeItem* edge : edges) {
         AbstractNode* u = edge->getFrom();
