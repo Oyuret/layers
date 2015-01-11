@@ -7,7 +7,7 @@ CycleReduction::CycleReduction()
 void CycleReduction::run(Graph &graph)
 {
 
-    emit setStatusMsg("Reducing crossings...");
+    emit setStatusMsg("Reducing cycles...");
 
     //reset
     visited.clear();
@@ -25,7 +25,7 @@ void CycleReduction::run(Graph &graph)
     // Start reversing edges
     DFS(start, graph);
 
-    emit setStatusMsg("Reducing crossings... Done!");
+    emit setStatusMsg("Reducing cycles... Done!");
 
 }
 

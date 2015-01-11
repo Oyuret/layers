@@ -19,6 +19,7 @@ void InsertDummyNodes::run(Graph& graph, QGraphicsScene *scene)
 
 void InsertDummyNodes::addDummies(QList<QList<AbstractNode *> > &layers, Graph &graph, QGraphicsScene* scene,QList<EdgeItem *> edges)
 {
+    int dummyCount =0;
     for(EdgeItem* edge : edges) {
         AbstractNode* u = edge->getFrom();
         AbstractNode* v = edge->getTo();
@@ -30,7 +31,9 @@ void InsertDummyNodes::addDummies(QList<QList<AbstractNode *> > &layers, Graph &
         while(i != j) {
 
             // crate new dummy node
+            //Node* dummy = new Node(QString::number(dummyCount).append("D"),25,25);
             DummyNode* dummy = new DummyNode();
+            dummyCount++;
             dummy->setLayer(i);
             dummy->setX(0);
             dummy->setY(0);
@@ -65,6 +68,7 @@ void InsertDummyNodes::addDummies(QList<QList<AbstractNode *> > &layers, Graph &
 
 void InsertDummyNodes::addReversedDummies(QList<QList<AbstractNode *> > &layers, Graph &graph, QGraphicsScene *scene, QList<EdgeItem *> edges)
 {
+    int dummyCount = 0;
     for(EdgeItem* edge : edges) {
         AbstractNode* u = edge->getFrom();
         AbstractNode* v = edge->getTo();
@@ -76,7 +80,9 @@ void InsertDummyNodes::addReversedDummies(QList<QList<AbstractNode *> > &layers,
         while(i != j) {
 
             // crate new dummy node
+            //Node* dummy = new Node(QString::number(dummyCount).append("R"),25,25);
             DummyNode* dummy = new DummyNode();
+            dummyCount++;
             dummy->setLayer(i);
             dummy->setX(0);
             dummy->setY(0);

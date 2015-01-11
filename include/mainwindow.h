@@ -11,6 +11,7 @@
 #include "assignlayers.h"
 #include "insertdummynodes.h"
 #include "reducecrossings.h"
+#include "balancegraph.h"
 #include "graph.h"
 #include "xml_parser.h"
 
@@ -31,11 +32,12 @@ private:
     Graph graph;
     XML_Parser parser;
 
-    // The algorithms
+    // The normal algorithms
     CycleReduction removeCycles;
     AssignLayers assignLayers;
     InsertDummyNodes insertDummyNodes;
     ReduceCrossings reduceCrossings;
+    BalanceGraph balanceGraph;
 
 
     Ui::MainWindow * ui;
@@ -49,6 +51,7 @@ private slots:
     void on_layeringButton_clicked();
     void on_normalDummyNodesButton_clicked();
     void on_normalCrossRedButton_clicked();
+    void on_normalPendulumButton_clicked();
 };
 
 #endif // MAINWINDOW_H

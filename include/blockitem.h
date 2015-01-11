@@ -10,6 +10,7 @@ class BlockItem : public QGraphicsItem
 public:
     BlockItem(){}
     BlockItem(QString name, int width, int height);
+    void changeName(QString name);
     const QString getName() const;
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *);

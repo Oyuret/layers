@@ -30,6 +30,7 @@ public:
     void setLayers(QList<QList<AbstractNode*>> layers);
     QList<QList<AbstractNode*>>& getLayers();
     void repaintLayers();
+    void adjustAllEdges();
 
     void clear();
     void resetReversed();
@@ -40,8 +41,6 @@ public:
     virtual ~Graph(){}
 
 private:
-    void adjustAllEdges();
-
 
     AbstractNode* start;
     QMap<QString,AbstractNode*> nodes;

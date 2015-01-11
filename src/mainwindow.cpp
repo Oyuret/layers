@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&assignLayers,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&insertDummyNodes,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&reduceCrossings,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
+    connect(&balanceGraph,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&parser,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
 
 }
@@ -80,5 +81,12 @@ void MainWindow::on_normalCrossRedButton_clicked()
 {
     reduceCrossings.run(graph);
     graph.repaintLayers();
+    scene->update(scene->sceneRect());
+}
+
+void MainWindow::on_normalPendulumButton_clicked()
+{
+    balanceGraph.run(graph);
+    graph.adjustAllEdges();
     scene->update(scene->sceneRect());
 }

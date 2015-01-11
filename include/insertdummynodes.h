@@ -3,6 +3,7 @@
 #include "algorithm.h"
 #include "abstract_node.h"
 #include "dummynode.h"
+#include "node.h"
 #include "edgeitem.h"
 #include "graph.h"
 

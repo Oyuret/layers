@@ -7,6 +7,12 @@ BlockItem::BlockItem(QString name, int width, int height)
     this->height = height;
 }
 
+void BlockItem::changeName(QString name)
+{
+    this->name = name;
+    update();
+}
+
 const QString BlockItem::getName() const
 {
     return name;
