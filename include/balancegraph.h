@@ -2,6 +2,7 @@
 #define BALANCEGRAPH_H
 #include <QList>
 #include <QMap>
+#include <QQueue>
 #include "algorithm.h"
 #include "abstract_node.h"
 
@@ -37,7 +38,9 @@ private:
     void createTrivialLinearSegment(AbstractNode* node);
     void createLinearSegment(AbstractNode* node);
 
+    void connectLinearSegments(Graph& graph);
     void topologicSorting();
+    void initialPositioning(Graph& graph);
 
     void generateDownRegions();
     void generateUpRegions();

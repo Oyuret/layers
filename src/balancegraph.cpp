@@ -1,4 +1,5 @@
 #include "include/balancegraph.h"
+#include <QDebug>
 
 BalanceGraph::BalanceGraph() :
     Algorithm()
@@ -19,6 +20,10 @@ void BalanceGraph::run(Graph &graph)
     emit setStatusMsg("Balancing graph...");
 
     generateLinearSegments(graph);
+    connectLinearSegments(graph);
+    topologicSorting();
+    initialPositioning(graph);
+    graph.adjustAllEdges();
 
 
     // Start the pendulum algorithm
@@ -91,9 +96,77 @@ void BalanceGraph::createLinearSegment(AbstractNode *node)
     }
 }
 
+void BalanceGraph::connectLinearSegments(Graph &graph)
+{
+    for(QList<AbstractNode*> layer : graph.getLayers()) {
+        AbstractNode* prev = nullptr;
+
+        for(AbstractNode* node : layer) {
+            if(prev != nullptr) {
+                Segment* left = nodeToSegment.value(prev);
+                Segment* right = nodeToSegment.value(node);
+
+                if(left != right) {
+                    left->successors.append(right);
+                    right->predecessors.append(left);
+                }
+            }
+            prev = node;
+        }
+    }
+}
+
 void BalanceGraph::topologicSorting()
 {
-    // Do nothing right now
+    QQueue<Segment*> queue;
+    QList<Segment*> topologicSorted;
+
+    for(Segment* segment : segments) {
+        if(segment->predecessors.isEmpty()) {
+            queue.enqueue(segment);
+            topologicSorted.append(segment);
+        }
+    }
+
+    while(!queue.isEmpty()) {
+        Segment* segment = queue.dequeue();
+
+        for(Segment* succ : segment->successors) {
+            succ->predecessors.removeOne(segment);
+
+            if(succ->predecessors.isEmpty()) {
+                queue.enqueue(succ);
+                topologicSorted.append(succ);
+            }
+        }
+    }
+
+    segments = topologicSorted;
+}
+
+void BalanceGraph::initialPositioning(Graph& graph)
+{
+    int minPos[graph.getLayers().size()];
+
+    // Set all minPos to 0
+    for(int i=0; i< graph.getLayers().size(); ++i) {
+        minPos[i] = 0;
+    }
+
+    for (Segment* s : segments) {
+        int max = 0;
+        for (AbstractNode* n : s->nodes) {
+            int x = minPos[n->getLayer()];
+            if (x > max) {
+                max = x;
+            }
+        }
+
+        for (AbstractNode* n : s->nodes) {
+            minPos[n->getLayer()] = max + n->boundingRect().width() + 50;
+            n->setX(max);
+        }
+    }
 }
 
 void BalanceGraph::generateDownRegions()
