@@ -4,6 +4,7 @@
 #include <QMap>
 #include <QQueue>
 #include <limits>
+#include <algorithm>
 #include "algorithm.h"
 #include "abstract_node.h"
 
@@ -26,6 +27,9 @@ class Region {
 public:
     Region();
     virtual ~Region() {}
+    int minTopologicNumber;
+    QList<Segment*> segments;
+    double dForce;
 };
 
 class BalanceGraph : public Algorithm
@@ -51,8 +55,6 @@ private:
     void sweep(Graph& graph, direction direction);
     void calculateDownForces();
     void calculateUpForces();
-    void generateDownRegions();
-    void generateUpRegions();
     void reset();
 
     QMap<AbstractNode*,Segment*> nodeToSegment;

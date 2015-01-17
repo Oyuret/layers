@@ -123,10 +123,13 @@ void BalanceGraph::topologicSorting()
     QQueue<Segment*> queue;
     QList<Segment*> topologicSorted;
 
+    int topologicIndex = 0;
     for(Segment* segment : segments) {
         if(segment->predecessors.isEmpty()) {
+            segment->topologicNumber = topologicIndex;
             queue.enqueue(segment);
             topologicSorted.append(segment);
+            topologicIndex++;
         }
     }
 
@@ -137,8 +140,10 @@ void BalanceGraph::topologicSorting()
             succ->predecessors.removeOne(segment);
 
             if(succ->predecessors.isEmpty()) {
+                succ->topologicNumber = topologicIndex;
                 queue.enqueue(succ);
                 topologicSorted.append(succ);
+                topologicIndex++;
             }
         }
     }
@@ -165,7 +170,7 @@ void BalanceGraph::initialPositioning(Graph& graph)
         }
 
         for (AbstractNode* n : s->nodes) {
-            minPos[n->getLayer()] = max + n->boundingRect().width() + 50;
+            minPos[n->getLayer()] = max + n->boundingRect().width() + 25;
             n->setX(max);
         }
     }
@@ -198,23 +203,74 @@ void BalanceGraph::sweep(Graph &graph, BalanceGraph::direction direction)
         calculateUpForces();
     }
 
-    // Keep on
+    // Generate trivial regions
+    QList<Region*> regions;
+    for(Segment* segment : segments) {
+        Region* region = new Region();
+        segment->region = region;
+        region->minTopologicNumber = segment->topologicNumber;
+        region->segments.append(segment);
+        region->dForce = segment->dForce;
+        regions.append(region);
+    }
+
+    // If regions are touching
+    for(Segment* segment : segments) {
+        for(AbstractNode* node : segment->nodes) {
+            if(node->getPositionInLayer() != 0) {
+                AbstractNode* prevNode = graph.getLayers().at(node->getLayer()).at(node->getPositionInLayer()-1);
+                if(prevNode->boundingRect().x() + prevNode->boundingRect().width() + 25 == node->boundingRect().x()) {
+                    Segment* other = nodeToSegment.value(prevNode);
+                    Region* r1 = segment->region;
+                    Region* r2 = other->region;
+
+                    if(r1 != r2 && r2->dForce >= r1->dForce) {
+
+                        if(r2->segments.size() < r1->segments.size()) {
+                            r1->dForce = (r1->dForce * r1->segments.size() + r2->dForce * r2->segments.size()) / (r1->segments.size() + r2->segments.size());
+
+                            for (Segment* tempS : r2->segments) {
+                                r1->segments.append(tempS);
+                                tempS->region = r1;
+                                r1->minTopologicNumber = std::min(r1->minTopologicNumber, tempS->topologicNumber);
+                            }
+                            regions.removeAll(r2);
+                        } else {
+                            r2->dForce = (r1->dForce * r1->segments.size() + r2->dForce * r2->segments.size()) / (r1->segments.size() + r2->segments.size());
+
+                            for (Segment* tempS : r1->segments) {
+                                r2->segments.append(tempS);
+                                tempS->region = r2;
+                                r2->minTopologicNumber = std::min(r2->minTopologicNumber, tempS->topologicNumber);
+                            }
+
+                            regions.removeAll(r1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    std::sort(regions.begin(),regions.end(),[](const Region* const x, const Region* const y){ return x->minTopologicNumber < y->minTopologicNumber;});
+
+    // Process regions now
 
 }
 
 void BalanceGraph::calculateDownForces()
 {
     for(Segment* segment : segments) {
-        AbstractNode* node = segment->nodes.first();
+        AbstractNode* head = segment->nodes.first();
 
-        if (node->getPredecessors().isEmpty()) {
+        if (head->getPredecessors().isEmpty()) {
             segment->dForce = 0;
         } else {
             qreal sum = 0;
-            for(AbstractNode* pred : node->getPredecessors()) {
-                sum += pred->getOutport().x() - node->getInport().x();
+            for(AbstractNode* pred : head->getPredecessors()) {
+                sum += pred->getOutport().x() - head->getInport().x();
             }
-            segment->dForce = (double) (sum / node->getPredecessors().size());
+            segment->dForce = (double) (sum / head->getPredecessors().size());
         }
     }
 }
@@ -222,28 +278,18 @@ void BalanceGraph::calculateDownForces()
 void BalanceGraph::calculateUpForces()
 {
     for(Segment* segment : segments) {
-        AbstractNode* node = segment->nodes.last();
+        AbstractNode* tail = segment->nodes.last();
 
-        if (node->getSuccessors().isEmpty()) {
+        if (tail->getSuccessors().isEmpty()) {
             segment->dForce = 0;
         } else {
             qreal sum = 0;
-            for(AbstractNode* succ : node->getSuccessors()) {
-                sum += succ->getInport().x() -  node->getOutport().x();
+            for(AbstractNode* succ : tail->getSuccessors()) {
+                sum += succ->getInport().x() -  tail->getOutport().x();
             }
-            segment->dForce = (double) (sum / node->getSuccessors().size());
+            segment->dForce = (double) (sum / tail->getSuccessors().size());
         }
     }
-
-}
-
-void BalanceGraph::generateDownRegions()
-{
-
-}
-
-void BalanceGraph::generateUpRegions()
-{
 
 }
 
@@ -260,4 +306,10 @@ void BalanceGraph::reset()
 Segment::Segment() :
     region(nullptr)
 {
+}
+
+
+Region::Region()
+{
+
 }
