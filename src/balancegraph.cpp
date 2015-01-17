@@ -19,14 +19,16 @@ void BalanceGraph::run(Graph &graph)
 
     emit setStatusMsg("Balancing graph...");
 
+    // Generate a starting layout
     generateLinearSegments(graph);
     connectLinearSegments(graph);
     topologicSorting();
     initialPositioning(graph);
     graph.adjustAllEdges();
 
-
     // Start the pendulum algorithm
+    pendulum(graph);
+    graph.adjustAllEdges();
 
     emit setStatusMsg("Balancing graph... Done!");
 }
@@ -167,6 +169,72 @@ void BalanceGraph::initialPositioning(Graph& graph)
             n->setX(max);
         }
     }
+}
+
+void BalanceGraph::pendulum(Graph &graph)
+{
+    double oldZ = std::numeric_limits<double>::max();
+    double newZ = calculateZForce(graph);
+
+    while(newZ < oldZ) {
+        sweep(graph,DOWN);
+        sweep(graph,UP);
+        oldZ = newZ;
+        newZ = calculateZForce(graph);
+    }
+
+}
+
+double BalanceGraph::calculateZForce(Graph &graph)
+{
+    return 0;
+}
+
+void BalanceGraph::sweep(Graph &graph, BalanceGraph::direction direction)
+{
+    if(direction == DOWN) {
+        calculateDownForces();
+    } else {
+        calculateUpForces();
+    }
+
+    // Keep on
+
+}
+
+void BalanceGraph::calculateDownForces()
+{
+    for(Segment* segment : segments) {
+        AbstractNode* node = segment->nodes.first();
+
+        if (node->getPredecessors().isEmpty()) {
+            segment->dForce = 0;
+        } else {
+            qreal sum = 0;
+            for(AbstractNode* pred : node->getPredecessors()) {
+                sum += pred->getOutport().x() - node->getInport().x();
+            }
+            segment->dForce = (double) (sum / node->getPredecessors().size());
+        }
+    }
+}
+
+void BalanceGraph::calculateUpForces()
+{
+    for(Segment* segment : segments) {
+        AbstractNode* node = segment->nodes.last();
+
+        if (node->getSuccessors().isEmpty()) {
+            segment->dForce = 0;
+        } else {
+            qreal sum = 0;
+            for(AbstractNode* succ : node->getSuccessors()) {
+                sum += succ->getInport().x() -  node->getOutport().x();
+            }
+            segment->dForce = (double) (sum / node->getSuccessors().size());
+        }
+    }
+
 }
 
 void BalanceGraph::generateDownRegions()

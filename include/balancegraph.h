@@ -3,6 +3,7 @@
 #include <QList>
 #include <QMap>
 #include <QQueue>
+#include <limits>
 #include "algorithm.h"
 #include "abstract_node.h"
 
@@ -34,6 +35,9 @@ public:
     virtual ~BalanceGraph();
     virtual void run(Graph& graph);
 private:
+
+    enum direction {UP, DOWN};
+
     void generateLinearSegments(Graph& graph);
     void createTrivialLinearSegment(AbstractNode* node);
     void createLinearSegment(AbstractNode* node);
@@ -42,6 +46,11 @@ private:
     void topologicSorting();
     void initialPositioning(Graph& graph);
 
+    void pendulum(Graph& graph);
+    double calculateZForce(Graph& graph);
+    void sweep(Graph& graph, direction direction);
+    void calculateDownForces();
+    void calculateUpForces();
     void generateDownRegions();
     void generateUpRegions();
     void reset();
