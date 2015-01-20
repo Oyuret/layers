@@ -30,6 +30,7 @@ public:
     int minTopologicNumber;
     QList<Segment*> segments;
     double dForce;
+    double getDforce();
 };
 
 class BalanceGraph : public Algorithm
@@ -50,9 +51,13 @@ private:
     void topologicSorting();
     void initialPositioning(Graph& graph);
 
-    void pendulum(Graph& graph);
+
+
+    void newPendulum(Graph& graph);
+    void newSweep(Graph& graph, direction direction);
+    void newProcessRegion(Region* region, Graph& graph);
+
     double calculateZForce(Graph& graph);
-    void sweep(Graph& graph, direction direction);
     void calculateDownForces();
     void calculateUpForces();
     void reset();

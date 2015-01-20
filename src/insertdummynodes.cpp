@@ -31,8 +31,8 @@ void InsertDummyNodes::addDummies(QList<QList<AbstractNode *> > &layers, Graph &
         while(i != j) {
 
             // crate new dummy node
-            Node* dummy = new Node(QString::number(dummyCount).append("D"),25,25);
-            //DummyNode* dummy = new DummyNode();
+            //Node* dummy = new Node(QString::number(dummyCount).append("D"),25,25);
+            DummyNode* dummy = new DummyNode();
             dummyCount++;
             dummy->setLayer(i);
             dummy->setX(0);
@@ -80,8 +80,8 @@ void InsertDummyNodes::addReversedDummies(QList<QList<AbstractNode *> > &layers,
         while(i != j) {
 
             // crate new dummy node
-            Node* dummy = new Node(QString::number(dummyCount).append("R"),25,25);
-            //DummyNode* dummy = new DummyNode();
+            //Node* dummy = new Node(QString::number(dummyCount).append("R"),25,25);
+            DummyNode* dummy = new DummyNode();
             dummyCount++;
             dummy->setLayer(i);
             dummy->setX(0);

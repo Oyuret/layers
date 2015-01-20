@@ -34,6 +34,7 @@ void ReduceCrossings::run(Graph &graph)
         upsweep(graph);
 
     }
+    downsweep(graph);
 
     emit setStatusMsg("Reducing crossings...Done!");
 }

@@ -27,7 +27,7 @@ void BalanceGraph::run(Graph &graph)
     graph.adjustAllEdges();
 
     // Start the pendulum algorithm
-    pendulum(graph);
+    newPendulum(graph);
     graph.adjustAllEdges();
 
     emit setStatusMsg("Balancing graph... Done!");
@@ -169,33 +169,40 @@ void BalanceGraph::initialPositioning(Graph& graph)
             }
         }
 
+        qreal maxWidth = s->nodes.first()->boundingRect().width();
+        for(AbstractNode* n : s->nodes) {
+            maxWidth = std::max(n->boundingRect().width(),maxWidth);
+        }
+
+
         for (AbstractNode* n : s->nodes) {
-            minPos[n->getLayer()] = max + n->boundingRect().width() + 25;
-            n->setX(max);
+            qreal offset = (maxWidth - n->boundingRect().width())/2;
+            n->setX(max + offset);
+
+            minPos[n->getLayer()] = n->x() + n->boundingRect().width() + offset + 25;
         }
     }
 }
 
-void BalanceGraph::pendulum(Graph &graph)
+void BalanceGraph::newPendulum(Graph &graph)
 {
     double oldZ = std::numeric_limits<double>::max();
     double newZ = calculateZForce(graph);
 
-    while(newZ < oldZ) {
-        sweep(graph,DOWN);
-        sweep(graph,UP);
+    int i = 0;
+    while(i < 500) {
+        newSweep(graph,DOWN);
+        newSweep(graph,UP);
         oldZ = newZ;
         newZ = calculateZForce(graph);
+        i++;
     }
-
+    newSweep(graph,DOWN);
+    newSweep(graph,DOWN);
+    newSweep(graph,DOWN);
 }
 
-double BalanceGraph::calculateZForce(Graph &graph)
-{
-    return 0;
-}
-
-void BalanceGraph::sweep(Graph &graph, BalanceGraph::direction direction)
+void BalanceGraph::newSweep(Graph &graph, BalanceGraph::direction direction)
 {
     if(direction == DOWN) {
         calculateDownForces();
@@ -210,52 +217,169 @@ void BalanceGraph::sweep(Graph &graph, BalanceGraph::direction direction)
         segment->region = region;
         region->minTopologicNumber = segment->topologicNumber;
         region->segments.append(segment);
-        region->dForce = segment->dForce;
         regions.append(region);
     }
 
-    // If regions are touching
-    for(Segment* segment : segments) {
-        for(AbstractNode* node : segment->nodes) {
-            if(node->getPositionInLayer() != 0) {
-                AbstractNode* prevNode = graph.getLayers().at(node->getLayer()).at(node->getPositionInLayer()-1);
-                if(prevNode->boundingRect().x() + prevNode->boundingRect().width() + 25 == node->boundingRect().x()) {
-                    Segment* other = nodeToSegment.value(prevNode);
-                    Region* r1 = segment->region;
-                    Region* r2 = other->region;
+    // Combine regions
+    bool regionsChanged = true;
+    while(regionsChanged) {
+        regionsChanged = false;
 
-                    if(r1 != r2 && r2->dForce >= r1->dForce) {
+        // Combine
+        for(Segment* segment : segments) {
+            for(AbstractNode* left : segment->nodes) {
+                int layer = left->getLayer();
+                int positionOfLeft = left->getPositionInLayer();
 
-                        if(r2->segments.size() < r1->segments.size()) {
-                            r1->dForce = (r1->dForce * r1->segments.size() + r2->dForce * r2->segments.size()) / (r1->segments.size() + r2->segments.size());
-
-                            for (Segment* tempS : r2->segments) {
-                                r1->segments.append(tempS);
-                                tempS->region = r1;
-                                r1->minTopologicNumber = std::min(r1->minTopologicNumber, tempS->topologicNumber);
-                            }
-                            regions.removeAll(r2);
-                        } else {
-                            r2->dForce = (r1->dForce * r1->segments.size() + r2->dForce * r2->segments.size()) / (r1->segments.size() + r2->segments.size());
-
-                            for (Segment* tempS : r1->segments) {
-                                r2->segments.append(tempS);
-                                tempS->region = r2;
-                                r2->minTopologicNumber = std::min(r2->minTopologicNumber, tempS->topologicNumber);
-                            }
-
-                            regions.removeAll(r1);
-                        }
-                    }
+                // if we are last in the layer
+                if(positionOfLeft == graph.getLayers().at(layer).size()-1) {
+                    continue;
                 }
+
+                AbstractNode* right = graph.getLayers().at(layer).at(positionOfLeft+1);
+
+                Region* leftRegion = nodeToSegment.value(left)->region;
+                Region* rightRegion = nodeToSegment.value(right)->region;
+
+                // if we are the same region just continue
+                if(leftRegion == rightRegion) {
+                    continue;
+                }
+
+                // we are touching another node
+                if(right->x() <=  (left->x() + 25 + left->boundingRect().width())) {
+
+                    // if we are about to walk into each other
+                    if(leftRegion->getDforce() >= rightRegion->getDforce()) {
+                        regionsChanged = true;
+
+                        for(Segment* s : rightRegion->segments) {
+                            leftRegion->segments.append(s);
+                            s->region = leftRegion;
+                            leftRegion->minTopologicNumber = std::min(leftRegion->minTopologicNumber,s->topologicNumber);
+                        }
+                        delete rightRegion;
+                        regions.removeAll(rightRegion);
+                    }
+
+                }
+
+            }
+        } // Combining regions
+
+    } // While regions not changed
+
+    /*
+    for(Region* r : regions) {
+        qDebug() << "Region:";
+        for(Segment* s : r->segments) {
+            qDebug() << s->nodes.first()->getName();
+        }
+    }
+    */
+
+    // Order by minTopologicalNumber
+    std::sort(regions.begin(),regions.end(),[](const Region* const r1, const Region* const r2){return r1->minTopologicNumber < r2->minTopologicNumber;});
+
+
+    // Process each region
+    for(Region* r : regions) {
+        newProcessRegion(r,graph);
+    }
+
+
+
+
+    // Done. Delete regions
+    for(Region* r : regions) {
+        delete r;
+    }
+
+}
+
+void BalanceGraph::newProcessRegion(Region *region, Graph &graph)
+{
+    // if we do not need to move the region
+    if(region->getDforce() == 0) {
+        return;
+    }
+
+    double minMovement = region->getDforce();
+    if(minMovement < 0) {
+        minMovement = (-1)*minMovement;
+    }
+
+    for(Segment* s : region->segments) {
+        for(AbstractNode* node : s->nodes) {
+            int layer = node->getLayer();
+            int positionInLayer = node->getPositionInLayer();
+
+            // attempting to move to the left
+            if(region->getDforce() < 0) {
+
+                // If we are the leftmost node
+                if(positionInLayer == 0) {
+                    continue;
+                }
+
+                AbstractNode* leftNode = graph.getLayers().at(layer).at(positionInLayer-1);
+
+                // if leftNode is in the same region
+                if(nodeToSegment.value(leftNode)->region == s->region) {
+                    continue;
+                }
+
+                double availableMovement = node->x() - (leftNode->x() + leftNode->boundingRect().width() + 25);
+
+                if(availableMovement < minMovement) {
+                    minMovement = availableMovement;
+                }
+            }
+
+            // Attempting to move to the right
+            if(region->getDforce() > 0) {
+
+                // if we are the rightmost in layer
+                if(positionInLayer == graph.getLayers().at(layer).size()-1) {
+                    continue;
+                }
+
+                AbstractNode* rightNode = graph.getLayers().at(layer).at(positionInLayer+1);
+
+                // if rightNode is in the same region
+                if(nodeToSegment.value(rightNode)->region == s->region) {
+                    continue;
+                }
+
+                double availableMovement = rightNode->x() - (node->x() + node->boundingRect().width() + 25);
+
+                if(availableMovement < minMovement) {
+                    minMovement = availableMovement;
+                }
+
+            }
+        }
+    } // Calculate the maximal movement
+
+    // move the whole region
+    for(Segment* s : region->segments) {
+        for(AbstractNode* n : s->nodes) {
+
+            // movement to the left
+            if(region->getDforce() < 0) {
+                n->moveBy(-minMovement,0);
+            } else {
+                n->moveBy(minMovement,0);
             }
         }
     }
 
-    std::sort(regions.begin(),regions.end(),[](const Region* const x, const Region* const y){ return x->minTopologicNumber < y->minTopologicNumber;});
+}
 
-    // Process regions now
 
+double BalanceGraph::calculateZForce(Graph &graph)
+{
+    return 0;
 }
 
 void BalanceGraph::calculateDownForces()
@@ -312,4 +436,15 @@ Segment::Segment() :
 Region::Region()
 {
 
+}
+
+double Region::getDforce()
+{
+    double sum = 0;
+
+    for(Segment* s : segments) {
+        sum += s->dForce;
+    }
+
+    return sum / segments.size();
 }
