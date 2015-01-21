@@ -36,14 +36,14 @@ void RenderGraph::run(Graph &graph)
 
     // revert the reverted edges
     for(EdgeItem* edge : graph.getReversedEdges()) {
-        //edge->reverse(true);
+        edge->reverse(true);
     }
 
     // hide the dummy nodes
     for(const QList<AbstractNode*>& layer : graph.getLayers()) {
         for(AbstractNode* node: layer) {
             if(node->isDummy()) {
-                //node->hide();
+                node->hide();
             }
         }
     }
