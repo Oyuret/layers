@@ -29,7 +29,8 @@ SOURCES += src/blockitem.cpp \
     src/insertdummynodes.cpp \
     src/dummynode.cpp \
     src/reducecrossings.cpp \
-    src/balancegraph.cpp
+    src/balancegraph.cpp \
+    src/rendergraph.cpp
 
 HEADERS  += include/blockitem.h \
     include/mainwindow.h \
@@ -47,7 +48,8 @@ HEADERS  += include/blockitem.h \
     include/insertdummynodes.h \
     include/dummynode.h \
     include/reducecrossings.h \
-    include/balancegraph.h
+    include/balancegraph.h \
+    include/rendergraph.h
 
 FORMS    += ui/mainwindow.ui
 

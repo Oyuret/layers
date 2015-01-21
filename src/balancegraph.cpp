@@ -186,15 +186,15 @@ void BalanceGraph::initialPositioning(Graph& graph)
 
 void BalanceGraph::newPendulum(Graph &graph)
 {
-    double oldZ = std::numeric_limits<double>::max();
-    double newZ = calculateZForce(graph);
+    //double oldZ = std::numeric_limits<double>::max();
+    //double newZ = calculateZForce(graph);
 
     int i = 0;
     while(i < 500) {
         newSweep(graph,DOWN);
         newSweep(graph,UP);
-        oldZ = newZ;
-        newZ = calculateZForce(graph);
+        //oldZ = newZ;
+        //newZ = calculateZForce(graph);
         i++;
     }
     newSweep(graph,DOWN);
@@ -379,6 +379,7 @@ void BalanceGraph::newProcessRegion(Region *region, Graph &graph)
 
 double BalanceGraph::calculateZForce(Graph &graph)
 {
+    Q_UNUSED(graph);
     return 0;
 }
 

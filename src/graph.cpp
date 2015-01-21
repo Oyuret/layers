@@ -84,6 +84,22 @@ QList<EdgeItem *> Graph::getReversedEdges()
     return reversedEdges.values();
 }
 
+QList<EdgeItem *> Graph::findEdge(AbstractNode *from, AbstractNode *to)
+{
+    QPair<AbstractNode*, AbstractNode*> pair(from,to);
+    QList<EdgeItem*> edgesList;
+
+    if(edges.contains(pair)) {
+        edgesList.append(edges.value(pair));
+    }
+
+    if(reversedEdges.contains(pair)) {
+        edgesList.append(reversedEdges.value(pair));
+    }
+
+    return edgesList;
+}
+
 void Graph::setLayers(QList<QList<AbstractNode *> > layers)
 {
     this->layers = layers;

@@ -89,3 +89,8 @@ double AbstractNode::getUpsweepWeight() const
 
     return (double) positions/successors.size();
 }
+
+bool AbstractNode::isDummy() const
+{
+    return false;
+}

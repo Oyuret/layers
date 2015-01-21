@@ -8,6 +8,9 @@ public:
     DummyNode();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *);
+    virtual QPointF getInport();
+    virtual QPointF getOutport();
+    virtual bool isDummy() const;
     virtual ~DummyNode() {}
 };
 

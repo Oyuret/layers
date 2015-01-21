@@ -12,6 +12,7 @@
 #include "insertdummynodes.h"
 #include "reducecrossings.h"
 #include "balancegraph.h"
+#include "rendergraph.h"
 #include "graph.h"
 #include "xml_parser.h"
 
@@ -38,6 +39,7 @@ private:
     InsertDummyNodes insertDummyNodes;
     ReduceCrossings reduceCrossings;
     BalanceGraph balanceGraph;
+    RenderGraph renderGraph;
 
 
     Ui::MainWindow * ui;
@@ -52,6 +54,7 @@ private slots:
     void on_normalDummyNodesButton_clicked();
     void on_normalCrossRedButton_clicked();
     void on_normalPendulumButton_clicked();
+    void on_normalRenderGraph_clicked();
 };
 
 #endif // MAINWINDOW_H

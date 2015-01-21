@@ -8,7 +8,7 @@ EdgeItem::EdgeItem(AbstractNode *from, AbstractNode *to, bool renderArrow) :
 
 QRectF EdgeItem::boundingRect() const
 {
-    return line.boundingRect().united(arrow.boundingRect());
+    return pathLine.boundingRect().united(arrow.boundingRect());
 }
 
 void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -21,25 +21,36 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->setBrush(Qt::black);
 
 
-    painter->drawLine(line.line());
+    painter->drawPath(pathLine.path());
     if(renderArrow) painter->drawPolygon(arrow);
 
 }
 
-void EdgeItem::adjust()
+void EdgeItem::adjust(bool cosmetically)
 {
     prepareGeometryChange();
-    QPointF sourcePoint = from->getOutport();
-    QPointF destinationPoint = to->getInport();
 
-    //adjust the line
-    /*points.clear();
-    points.push_back(from->getOutport());
-    for(QPointF point : bends) {
-        points.push_back(point);
+    QPointF sourcePoint;
+    QPointF destinationPoint;
+
+    if(cosmetically) {
+        sourcePoint = from->getInport();
+        destinationPoint = to->getOutport();
+    } else {
+        sourcePoint = from->getOutport();
+        destinationPoint = to->getInport();
     }
-    points.push_back(to->getInport());*/
-    line.setLine(from->getOutport().x(),from->getOutport().y(),to->getInport().x(),to->getInport().y());
+
+
+    // add the bends to the path
+    QPainterPath path;
+    path.moveTo(sourcePoint);
+    for(QPointF bend : bends) {
+        path.lineTo(bend);
+        path.moveTo(bend);
+    }
+    path.lineTo(destinationPoint);
+    pathLine.setPath(path);
 
     // adjust the arrow
     if(renderArrow) {
@@ -63,10 +74,32 @@ void EdgeItem::adjust()
     }
 }
 
-void EdgeItem::reverse()
+void EdgeItem::reverse(bool cosmetically)
 {
+    // update from/to
     AbstractNode* tmp = from;
     from = to;
     to = tmp;
-    adjust();
+
+    // reverse the order of the bends
+    std::reverse(bends.begin(),bends.end());
+    swapReversed();
+
+    // draw line?
+    if(to->isDummy()) {
+        renderArrow = false;
+    } else {
+        renderArrow = true;
+    }
+
+    if(cosmetically) {
+        adjust(true);
+    } else {
+        adjust();
+    }
+}
+
+void EdgeItem::addBend(QPointF bend)
+{
+    bends.append(bend);
 }

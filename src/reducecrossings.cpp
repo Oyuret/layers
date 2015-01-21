@@ -8,7 +8,6 @@ ReduceCrossings::ReduceCrossings() :
 void ReduceCrossings::run(Graph &graph)
 {
     emit setStatusMsg("Reducing crossings...");
-    int currentCrossings = INT_MAX;
 
     // set the position in layer for all nodes
     for(QList<AbstractNode*>& layer : graph.getLayers()) {
@@ -24,15 +23,8 @@ void ReduceCrossings::run(Graph &graph)
 
     // initialize the crossing reduction
     for(int iteration = 0; iteration < MAX_ITERATIONS; ++iteration) {
-        currentCrossings = calculateCrossings(graph);
-
-        /*if(currentCrossings == 0) {
-            break;
-        }*/
-
         downsweep(graph);
         upsweep(graph);
-
     }
     downsweep(graph);
 

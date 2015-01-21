@@ -3,9 +3,12 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsLineItem>
+#include <QGraphicsPathItem>
+#include <QPainterPath>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <list>
+#include <algorithm>
 #include "abstract_edge.h"
 
 static const double Pi = 3.14159265358979323846264338327950288419717;
@@ -17,14 +20,14 @@ public:
     EdgeItem(AbstractNode* from, AbstractNode* to, bool renderArrow);
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void adjust();
-    void reverse();
+    void adjust(bool cosmetically=false);
+    void reverse(bool cosmetically=false);
+    void addBend(QPointF bend);
     virtual ~EdgeItem(){}
 private:
-    QGraphicsLineItem line;
+    QGraphicsPathItem pathLine;
     QPolygonF arrow;
     QVector<QPointF> bends;
-    QVector<QPointF> points;
     bool renderArrow;
 
 };

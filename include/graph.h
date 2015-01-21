@@ -26,6 +26,8 @@ public:
     EdgeItem* getReversedEdge(AbstractNode* from, AbstractNode* to);
     QList<EdgeItem *> getReversedEdges();
 
+    QList<EdgeItem*> findEdge(AbstractNode* from, AbstractNode* to);
+
 
     void setLayers(QList<QList<AbstractNode*>> layers);
     QList<QList<AbstractNode*>>& getLayers();

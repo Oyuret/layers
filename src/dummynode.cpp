@@ -17,3 +17,24 @@ void DummyNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setBrush(Qt::blue);
     painter->drawRoundedRect(0, 0, width, height, CORNER_RADIUS, CORNER_RADIUS);
 }
+
+QPointF DummyNode::getInport()
+{
+    QPointF position = pos();
+    position.setX(position.x() + (width/2));
+    position.setY(position.y() + (height/2));
+    return position;
+}
+
+QPointF DummyNode::getOutport()
+{
+    QPointF position = pos();
+    position.setX(position.x() + (width/2));
+    position.setY(position.y() + (height/2));
+    return position;
+}
+
+bool DummyNode::isDummy() const
+{
+    return true;
+}

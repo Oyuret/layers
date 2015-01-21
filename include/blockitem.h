@@ -16,8 +16,8 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *);
     virtual ~BlockItem(){}
 
-    QPointF getInport();
-    QPointF getOutport();
+    virtual QPointF getInport();
+    virtual QPointF getOutport();
 
 protected:
     QString name;

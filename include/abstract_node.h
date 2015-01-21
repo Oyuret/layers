@@ -22,6 +22,9 @@ public:
     void setPositionInLayer(int position);
     double getDownsweepWeight() const;
     double getUpsweepWeight() const;
+
+    virtual bool isDummy() const;
+
     virtual ~AbstractNode(){}
 
 private:

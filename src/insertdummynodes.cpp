@@ -98,12 +98,14 @@ void InsertDummyNodes::addReversedDummies(QList<QList<AbstractNode *> > &layers,
 
             // add connection between last and dummy
             EdgeItem* edgeLasttoDummy = new EdgeItem(last,dummy,false);
+            edgeLasttoDummy->swapReversed();
             graph.addReversedEdge(last,dummy,edgeLasttoDummy);
             scene->addItem(edgeLasttoDummy);
 
 
             // add connection between dummy and v
             EdgeItem* edgeDummytoV = new EdgeItem(dummy,v,true);
+            edgeDummytoV->swapReversed();
             graph.addReversedEdge(dummy,v,edgeDummytoV);
             scene->addItem(edgeDummytoV);
 

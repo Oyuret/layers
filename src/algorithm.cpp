@@ -6,6 +6,7 @@ Algorithm::Algorithm()
 
 void Algorithm::run(Graph& graph)
 {
+    Q_UNUSED(graph);
     emit setStatusMsg("En Test");
 }
 
