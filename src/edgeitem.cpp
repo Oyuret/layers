@@ -17,8 +17,15 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(option)
 
     painter->setClipRect(option->exposedRect);
-    painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter->setBrush(Qt::black);
+    if(!reversed) {
+        painter->setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setBrush(Qt::black);
+    } else {
+        painter->setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setBrush(Qt::red);
+    }
+
+
 
 
     painter->drawPath(pathLine.path());
@@ -83,7 +90,9 @@ void EdgeItem::reverse(bool cosmetically)
 
     // reverse the order of the bends
     std::reverse(bends.begin(),bends.end());
-    swapReversed();
+    if(!cosmetically) {
+        swapReversed();
+    }
 
     // draw line?
     if(to->isDummy()) {

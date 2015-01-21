@@ -63,7 +63,11 @@ void RenderGraph::assignTracks(const QList<AbstractNode *>& upper, const QList<A
 
             for(EdgeItem* edge : edges) {
 
-                if(edge->getFrom()->x() == edge->getTo()->x()) {
+                if(edge->getFrom()->getOutport().x() == edge->getTo()->getInport().x()) {
+                    continue;
+                }
+
+                if(qAbs(edge->getFrom()->getOutport().x() - edge->getTo()->getInport().x()) < 2 ) {
                     continue;
                 }
 
