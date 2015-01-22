@@ -15,6 +15,7 @@
 #include "rendergraph.h"
 #include "graph.h"
 #include "xml_parser.h"
+#include "createibedobed.h"
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +42,9 @@ private:
     BalanceGraph balanceGraph;
     RenderGraph renderGraph;
 
+    // My algorithms
+    CreateIbedObed createIbedObed;
+
 
     Ui::MainWindow * ui;
     QGraphicsScene * scene;
@@ -55,6 +59,8 @@ private slots:
     void on_normalCrossRedButton_clicked();
     void on_normalPendulumButton_clicked();
     void on_normalRenderGraph_clicked();
+    void on_altBackEdgeButton_clicked();
+    void on_altDummyNodesButton_clicked();
 };
 
 #endif // MAINWINDOW_H

@@ -24,6 +24,8 @@ public:
     double getUpsweepWeight() const;
 
     virtual bool isDummy() const;
+    virtual bool isIbed() const;
+    virtual bool isObed() const;
 
     virtual ~AbstractNode(){}
 

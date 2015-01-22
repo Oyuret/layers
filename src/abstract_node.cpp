@@ -94,3 +94,13 @@ bool AbstractNode::isDummy() const
 {
     return false;
 }
+
+bool AbstractNode::isIbed() const
+{
+    return false;
+}
+
+bool AbstractNode::isObed() const
+{
+    return false;
+}

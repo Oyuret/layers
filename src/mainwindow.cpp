@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->graphicsView->setScene(scene);
 
+    // Normal algorithms
     connect(&removeCycles,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&assignLayers,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&insertDummyNodes,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
@@ -16,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&balanceGraph,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&renderGraph,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
     connect(&parser,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
+
+    // Altered algorithms
+    connect(&createIbedObed,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
 
 }
 
@@ -95,5 +99,19 @@ void MainWindow::on_normalPendulumButton_clicked()
 void MainWindow::on_normalRenderGraph_clicked()
 {
     renderGraph.run(graph);
+    scene->update(scene->sceneRect());
+}
+
+void MainWindow::on_altBackEdgeButton_clicked()
+{
+    createIbedObed.run(graph,scene);
+    graph.repaintLayers();
+    scene->update(scene->sceneRect());
+}
+
+void MainWindow::on_altDummyNodesButton_clicked()
+{
+    insertDummyNodes.run(graph,scene);
+    graph.repaintLayers();
     scene->update(scene->sceneRect());
 }

@@ -30,7 +30,10 @@ SOURCES += src/blockitem.cpp \
     src/dummynode.cpp \
     src/reducecrossings.cpp \
     src/balancegraph.cpp \
-    src/rendergraph.cpp
+    src/rendergraph.cpp \
+    src/ibed.cpp \
+    src/obed.cpp \
+    src/createibedobed.cpp
 
 HEADERS  += include/blockitem.h \
     include/mainwindow.h \
@@ -49,7 +52,10 @@ HEADERS  += include/blockitem.h \
     include/dummynode.h \
     include/reducecrossings.h \
     include/balancegraph.h \
-    include/rendergraph.h
+    include/rendergraph.h \
+    include/ibed.h \
+    include/obed.h \
+    include/createibedobed.h
 
 FORMS    += ui/mainwindow.ui
 
