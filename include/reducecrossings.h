@@ -16,8 +16,6 @@ private:
     void downsweep(Graph& graph);
     void upsweep(Graph& graph);
     int calculateCrossings(Graph& graph);
-    int calculateDownsweepWeight();
-    int calculateUpsweepWeight();
     void updatePositionings(QList<AbstractNode *> &layer);
 };
 

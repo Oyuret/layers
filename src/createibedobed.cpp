@@ -9,7 +9,7 @@ void CreateIbedObed::run(Graph &graph, QGraphicsScene *scene)
 {
     emit setStatusMsg("Creating ibeds and obeds...");
 
-    // Create all pairs and link them
+    // Create all pairs of ibeds and obeds and link them
     QList<EdgeItem*> reversedEdges = graph.getReversedEdges();
     for(EdgeItem* reversed : reversedEdges) {
         AbstractNode* originalFrom = reversed->getTo();
@@ -17,29 +17,47 @@ void CreateIbedObed::run(Graph &graph, QGraphicsScene *scene)
 
         Ibed* ibed = new Ibed();
         Obed* obed = new Obed();
-        EdgeItem* ibedObedEdge = new EdgeItem(ibed,obed,false);
-        ibedObedEdge->swapReversed();
+        EdgeItem* edge = new EdgeItem(ibed,obed,false);
+        edge->swapReversed();
 
+        // Add the ibeds to their owners
+        originalTo->getIbeds().append(ibed);
+
+        // add items to scene
         scene->addItem(ibed);
         scene->addItem(obed);
-        scene->addItem(ibedObedEdge);
+        scene->addItem(edge);
 
+        // remove the old edge
         graph.removeReversedEdge(reversed->getFrom(),reversed->getTo());
-        graph.addReversedEdge(ibed,obed,ibedObedEdge);
+        graph.addReversedEdge(ibed,obed,edge);
         scene->removeItem(reversed);
 
-        // place in layers
-        QList<AbstractNode*>& ibedLayer = graph.getLayers()[originalTo->getLayer()];
-        ibedLayer.insert(ibedLayer.indexOf(originalTo),ibed);
+        // give the new nodes their layer
         ibed->setLayer(originalTo->getLayer());
-
-        QList<AbstractNode*>& obedLayer = graph.getLayers()[originalFrom->getLayer()];
-        obedLayer.insert(obedLayer.indexOf(originalFrom),obed);
         obed->setLayer(originalFrom->getLayer());
 
+        // insert the obeds to their position
+        QList<AbstractNode*>& obedLayer = graph.getLayers()[originalFrom->getLayer()];
+        obedLayer.insert(obedLayer.indexOf(originalFrom),obed);
     }
 
-    //  TODO: order ibeds by layer
+    // Order all ibeds, reverse the list
+    for(AbstractNode* node : graph.getNodes()) {
+        std::sort(node->getIbeds().begin(),node->getIbeds().end(),[](const AbstractNode* const n1,
+                  const AbstractNode* const n2){return n1->getFirstSucc()->getLayer()
+                    < n2->getFirstSucc()->getLayer();});
+        std::reverse(node->getIbeds().begin(),node->getIbeds().end());
+    }
+
+    // insert the ibeds to their layer
+    for(AbstractNode* node : graph.getNodes()) {
+        QList<AbstractNode*>& ibedLayer = graph.getLayers()[node->getLayer()];
+
+        for(AbstractNode* ibed : node->getIbeds()) {
+            ibedLayer.insert(ibedLayer.indexOf(node),ibed);
+        }
+    }
 
     emit setStatusMsg("Creating ibeds and obeds...Done!");
 }

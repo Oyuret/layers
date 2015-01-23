@@ -115,3 +115,17 @@ void MainWindow::on_altDummyNodesButton_clicked()
     graph.repaintLayers();
     scene->update(scene->sceneRect());
 }
+
+void MainWindow::on_altCrossRedButton_clicked()
+{
+    altReduceCrossings.run(graph);
+    graph.repaintLayers();
+    scene->update(scene->sceneRect());
+}
+
+void MainWindow::on_altPendulumButton_clicked()
+{
+    balanceGraph.run(graph);
+    graph.adjustAllEdges();
+    scene->update(scene->sceneRect());
+}

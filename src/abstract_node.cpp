@@ -63,7 +63,7 @@ void AbstractNode::setPositionInLayer(int position)
 double AbstractNode::getDownsweepWeight() const
 {
     if(predecessors.size() == 0) {
-        return 0;
+        return getUpsweepWeight();
     }
 
     // sum the position of my predecessors
@@ -88,6 +88,21 @@ double AbstractNode::getUpsweepWeight() const
     }
 
     return (double) positions/successors.size();
+}
+
+const AbstractNode *AbstractNode::getFirstSucc() const
+{
+    return successors.first();
+}
+
+QList<AbstractNode *> &AbstractNode::getIbeds()
+{
+    return ibeds;
+}
+
+QList<AbstractNode *> &AbstractNode::getObeds()
+{
+    return obeds;
 }
 
 bool AbstractNode::isDummy() const

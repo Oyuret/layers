@@ -16,6 +16,7 @@
 #include "graph.h"
 #include "xml_parser.h"
 #include "createibedobed.h"
+#include "altreducecrossings.h"
 
 namespace Ui {
 class MainWindow;
@@ -44,6 +45,7 @@ private:
 
     // My algorithms
     CreateIbedObed createIbedObed;
+    AltReduceCrossings altReduceCrossings;
 
 
     Ui::MainWindow * ui;
@@ -61,6 +63,8 @@ private slots:
     void on_normalRenderGraph_clicked();
     void on_altBackEdgeButton_clicked();
     void on_altDummyNodesButton_clicked();
+    void on_altCrossRedButton_clicked();
+    void on_altPendulumButton_clicked();
 };
 
 #endif // MAINWINDOW_H

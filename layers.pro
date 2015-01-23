@@ -33,7 +33,8 @@ SOURCES += src/blockitem.cpp \
     src/rendergraph.cpp \
     src/ibed.cpp \
     src/obed.cpp \
-    src/createibedobed.cpp
+    src/createibedobed.cpp \
+    src/altreducecrossings.cpp
 
 HEADERS  += include/blockitem.h \
     include/mainwindow.h \
@@ -55,7 +56,8 @@ HEADERS  += include/blockitem.h \
     include/rendergraph.h \
     include/ibed.h \
     include/obed.h \
-    include/createibedobed.h
+    include/createibedobed.h \
+    include/altreducecrossings.h
 
 FORMS    += ui/mainwindow.ui
 

@@ -23,6 +23,11 @@ public:
     double getDownsweepWeight() const;
     double getUpsweepWeight() const;
 
+    const AbstractNode* getFirstSucc() const;
+
+    QList<AbstractNode*>& getIbeds();
+    QList<AbstractNode*>& getObeds();
+
     virtual bool isDummy() const;
     virtual bool isIbed() const;
     virtual bool isObed() const;
@@ -34,6 +39,8 @@ private:
     int positionInLayer;
     QList<AbstractNode*> successors;
     QList<AbstractNode*> predecessors;
+    QList<AbstractNode*> ibeds;
+    QList<AbstractNode*> obeds;
 };
 
 #endif // ABSTRACTNODE_H

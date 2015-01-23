@@ -1,6 +1,7 @@
 #ifndef CREATEIBEDOBED_H
 #define CREATEIBEDOBED_H
 #include <QGraphicsScene>
+#include <algorithm>
 #include "algorithm.h"
 #include "graph.h"
 #include "edgeitem.h"
