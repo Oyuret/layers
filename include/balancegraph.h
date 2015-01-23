@@ -57,7 +57,6 @@ private:
     void newSweep(Graph& graph, direction direction);
     void newProcessRegion(Region* region, Graph& graph);
 
-    double calculateZForce(Graph& graph);
     void calculateDownForces();
     void calculateUpForces();
     void reset();

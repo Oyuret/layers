@@ -20,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Altered algorithms
     connect(&createIbedObed,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
+    connect(&altReduceCrossings,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
+    connect(&altRenderGraph,SIGNAL(setStatusMsg(QString)),this,SLOT(on_setStatusMsg(QString)));
+
 
 }
 
@@ -127,5 +130,11 @@ void MainWindow::on_altPendulumButton_clicked()
 {
     balanceGraph.run(graph);
     graph.adjustAllEdges();
+    scene->update(scene->sceneRect());
+}
+
+void MainWindow::on_altRenderButton_clicked()
+{
+    altRenderGraph.run(graph);
     scene->update(scene->sceneRect());
 }
