@@ -70,6 +70,9 @@ void AltRenderGraph::addReversedEdge(AbstractNode *from, AbstractNode *to, Graph
     // add the new edge to the graph
     EdgeItem* edge = new EdgeItem(from,to,true);
     edge->swapReversed();
+    if(from->isIbed() && from->getName().compare("1")!= 0) {
+        edge->setIsIbedEdge(true);
+    }
     graph.addReversedEdge(from,to,edge);
     scene->addItem(edge);
 }
@@ -97,16 +100,20 @@ void AltRenderGraph::assignIbedTracks(const QList<AbstractNode*>& layer, const Q
                 continue;
             }
 
-            if(edge->getFrom()->getOutport().x() == edge->getTo()->getInport().x()) {
+            if(edge->getTo()->isDummy() || edge->getTo()->isIbed() || edge->getTo()->isObed()) {
                 continue;
             }
 
-            if(qAbs(edge->getFrom()->getOutport().x() - edge->getTo()->getInport().x()) < 2 ) {
+            if(edge->getFrom()->getOutport().x() == edge->getTo()->getIbedInport().x()) {
+                continue;
+            }
+
+            if(qAbs(edge->getFrom()->getOutport().x() - edge->getTo()->getIbedInport().x()) < 2 ) {
                 continue;
             }
 
             qreal startPosition(from->getOutport().x());
-            qreal endPosition(to->getInport().x());
+            qreal endPosition(to->getIbedInport().x());
 
             QPair<qreal,EdgeItem*> start(startPosition,edge);
             QPair<qreal,EdgeItem*> end(endPosition,edge);
@@ -156,7 +163,7 @@ void AltRenderGraph::assignIbedTracks(const QList<AbstractNode*>& layer, const Q
     for(EdgeItem* edge : assignedTracks.keys()) {
         qreal trackPos = lowestPoint + (15*assignedTracks.value(edge));
         QPointF first(edge->getFrom()->getOutport().x(),trackPos);
-        QPointF second(edge->getTo()->getInport().x(),trackPos);
+        QPointF second(edge->getTo()->getIbedInport().x(),trackPos);
         edge->addBend(first);
         edge->addBend(second);
     }

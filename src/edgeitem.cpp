@@ -2,7 +2,8 @@
 
 EdgeItem::EdgeItem(AbstractNode *from, AbstractNode *to, bool renderArrow) :
     AbstractEdge(from,to),
-    renderArrow(renderArrow)
+    renderArrow(renderArrow),
+    isIbedEdge(false)
 {
 }
 
@@ -46,6 +47,10 @@ void EdgeItem::adjust(bool cosmetically)
     } else {
         sourcePoint = from->getOutport();
         destinationPoint = to->getInport();
+    }
+
+    if(isIbedEdge) {
+        destinationPoint = to->getIbedInport();
     }
 
 
@@ -116,4 +121,9 @@ void EdgeItem::addBend(QPointF bend)
 void EdgeItem::setRenderArrow(bool render)
 {
     this->renderArrow = render;
+}
+
+void EdgeItem::setIsIbedEdge(bool ibed)
+{
+    this->isIbedEdge = ibed;
 }

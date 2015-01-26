@@ -24,12 +24,14 @@ public:
     void reverse(bool cosmetically=false);
     void addBend(QPointF bend);
     void setRenderArrow(bool render);
+    void setIsIbedEdge(bool ibed);
     virtual ~EdgeItem(){}
 private:
     QGraphicsPathItem pathLine;
     QPolygonF arrow;
     QVector<QPointF> bends;
     bool renderArrow;
+    bool isIbedEdge;
 
 };
 

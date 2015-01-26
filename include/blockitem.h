@@ -18,6 +18,7 @@ public:
 
     virtual QPointF getInport();
     virtual QPointF getOutport();
+    virtual QPointF getIbedInport();
 
 protected:
     QString name;

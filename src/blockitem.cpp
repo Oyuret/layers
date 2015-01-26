@@ -52,3 +52,14 @@ QPointF BlockItem::getOutport()
     position.setY(position.y() + height);
     return position;
 }
+
+QPointF BlockItem::getIbedInport()
+{
+    if(name.compare("1")==0) {
+        return getInport();
+    }
+
+    QPointF position = pos();
+    position.setX(position.x() + (width/4));
+    return position;
+}
