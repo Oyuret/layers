@@ -135,6 +135,6 @@ void MainWindow::on_altPendulumButton_clicked()
 
 void MainWindow::on_altRenderButton_clicked()
 {
-    altRenderGraph.run(graph);
+    altRenderGraph.run(graph,scene);
     scene->update(scene->sceneRect());
 }

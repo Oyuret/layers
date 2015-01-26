@@ -32,9 +32,16 @@ public:
     virtual bool isIbed() const;
     virtual bool isObed() const;
 
+    AbstractNode* getSpawnedBy() const;
+    AbstractNode* getPointingAt() const;
+    void setSpawnedBy(AbstractNode* father);
+    void setPointingAt(AbstractNode* goal);
+
     virtual ~AbstractNode(){}
 
 private:
+    AbstractNode* spawnedBy;
+    AbstractNode* pointingAt;
     int layer;
     int positionInLayer;
     QList<AbstractNode*> successors;

@@ -20,6 +20,10 @@ void CreateIbedObed::run(Graph &graph, QGraphicsScene *scene)
         EdgeItem* edge = new EdgeItem(ibed,obed,false);
         edge->swapReversed();
 
+        // Tell who spawned the obed and where we are pointing to.
+        obed->setSpawnedBy(originalFrom);
+        obed->setPointingAt(originalTo);
+
         // Add the ibeds to their owners
         originalTo->getIbeds().append(ibed);
 

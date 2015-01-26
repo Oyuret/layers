@@ -119,3 +119,23 @@ bool AbstractNode::isObed() const
 {
     return false;
 }
+
+AbstractNode *AbstractNode::getSpawnedBy() const
+{
+    return spawnedBy;
+}
+
+AbstractNode *AbstractNode::getPointingAt() const
+{
+    return pointingAt;
+}
+
+void AbstractNode::setSpawnedBy(AbstractNode *father)
+{
+    spawnedBy = father;
+}
+
+void AbstractNode::setPointingAt(AbstractNode *goal)
+{
+    pointingAt = goal;
+}

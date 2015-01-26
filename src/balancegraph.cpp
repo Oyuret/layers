@@ -186,15 +186,26 @@ void BalanceGraph::initialPositioning(Graph& graph)
 
 void BalanceGraph::newPendulum(Graph &graph)
 {
-    int i = 0;
-    while(i < 600) {
+    for(int i=0; i<300; ++i) {
+        newSweep(graph,DOWN);
+    }
+
+    for(int i=0; i<300; ++i) {
+        newSweep(graph,UP);
+    }
+
+    for(int i=0; i<300; ++i) {
         newSweep(graph,DOWN);
         newSweep(graph,UP);
-        i++;
     }
+
+    for(int i=0; i<300; ++i) {
+        newSweep(graph,DOWN);
+    }
+
     newSweep(graph,DOWN);
     newSweep(graph,DOWN);
-    newSweep(graph,DOWN);
+    //newSweep(graph,DOWN);
 }
 
 void BalanceGraph::newSweep(Graph &graph, BalanceGraph::direction direction)
