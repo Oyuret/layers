@@ -23,6 +23,7 @@ public:
     void adjust(bool cosmetically=false);
     void reverse(bool cosmetically=false);
     void addBend(QPointF bend);
+    void setRenderArrow(bool render);
     virtual ~EdgeItem(){}
 private:
     QGraphicsPathItem pathLine;

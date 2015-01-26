@@ -112,3 +112,8 @@ void EdgeItem::addBend(QPointF bend)
 {
     bends.append(bend);
 }
+
+void EdgeItem::setRenderArrow(bool render)
+{
+    this->renderArrow = render;
+}

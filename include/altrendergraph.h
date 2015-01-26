@@ -16,9 +16,9 @@ public:
 private:
     QGraphicsScene* scene;
     void addReversedEdge(AbstractNode* from, AbstractNode* to, Graph &graph);
-    void assignIbedTracks(const QList<AbstractNode *> &layer, Graph &graph, int fromTrack);
+    void assignIbedTracks(const QList<AbstractNode *> &layer, const QList<AbstractNode*>& upper, Graph &graph, int fromTrack);
     int assignObedTracks(const QList<AbstractNode *> &layer, Graph& graph);
-    int assignTracks(const QList<AbstractNode *> &upper, const QList<AbstractNode *> &lower, Graph &graph, int fromTrack);
+    int assignTracks(const QList<AbstractNode *> &upper, Graph &graph, int fromTrack);
     void hungarian(QList<AbstractNode*>& nodes, Graph& graph);
 };
 

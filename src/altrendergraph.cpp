@@ -29,14 +29,13 @@ void AltRenderGraph::run(Graph &graph, QGraphicsScene *scene)
     graph.adjustAllEdges();
 
     // handle first layers ibeds
-    assignIbedTracks(graph.getLayers().first(), graph,0);
+    assignIbedTracks(graph.getLayers().first(),graph.getLayers().first(), graph,-1);
 
     // handle all other layers
     for(int i=0; i<graph.getLayers().size()-1; ++i) {
-        int fromTrack;
-        fromTrack = assignObedTracks(graph.getLayers().at(i), graph);
-        fromTrack = assignTracks(graph.getLayers().at(i),graph.getLayers().at(i+1),graph, fromTrack);
-        assignIbedTracks(graph.getLayers().at(i+1),graph, fromTrack);
+        int fromTrack = assignObedTracks(graph.getLayers().at(i), graph);
+        fromTrack = assignTracks(graph.getLayers().at(i),graph, fromTrack);
+        assignIbedTracks(graph.getLayers().at(i+1),graph.getLayers().at(i),graph, fromTrack);
     }
 
     // handle last obed tracks
@@ -45,6 +44,22 @@ void AltRenderGraph::run(Graph &graph, QGraphicsScene *scene)
 
     graph.adjustAllEdges();
 
+    for(QList<AbstractNode*>& layer : graph.getLayers()){
+        for(AbstractNode* node : layer) {
+            if(node->isDummy() || node->isObed() || node->isIbed()) {
+                node->hide();
+            }
+        }
+    }
+
+    for(EdgeItem* edge : graph.getReversedEdges()) {
+        if(edge->getTo()->isObed() || edge->getTo()->isIbed()) {
+            edge->setRenderArrow(false);
+        }
+    }
+
+
+    graph.adjustAllEdges();
 
 
     emit setStatusMsg("Rendering graph...Done!");
@@ -59,13 +74,96 @@ void AltRenderGraph::addReversedEdge(AbstractNode *from, AbstractNode *to, Graph
     scene->addItem(edge);
 }
 
-void AltRenderGraph::assignIbedTracks(const QList<AbstractNode*>& layer, Graph& graph, int fromTrack)
+void AltRenderGraph::assignIbedTracks(const QList<AbstractNode*>& layer, const QList<AbstractNode*>& upper, Graph& graph, int fromTrack)
 {
     // Add a reversed edge from each ibed to its father
     for(AbstractNode* node : layer) {
         for(AbstractNode* ibed : node->getIbeds()) {
             addReversedEdge(ibed,node,graph);
         }
+    }
+
+    // Add all edges to the timeline
+    QList<QPair<qreal,EdgeItem*>> timeLine;
+    for(AbstractNode* from : layer) {
+        for(AbstractNode* to : from->getSuccessors()) {
+            EdgeItem* edge = graph.getReversedEdge(from,to);
+
+            if(!edge) {
+                continue;
+            }
+
+            if(!edge->getFrom()->isIbed()) {
+                continue;
+            }
+
+            if(edge->getFrom()->getOutport().x() == edge->getTo()->getInport().x()) {
+                continue;
+            }
+
+            if(qAbs(edge->getFrom()->getOutport().x() - edge->getTo()->getInport().x()) < 2 ) {
+                continue;
+            }
+
+            qreal startPosition(from->getOutport().x());
+            qreal endPosition(to->getInport().x());
+
+            QPair<qreal,EdgeItem*> start(startPosition,edge);
+            QPair<qreal,EdgeItem*> end(endPosition,edge);
+
+            if(!timeLine.contains(start)) {
+                timeLine.append(start);
+            }
+            if(!timeLine.contains(end)) {
+                timeLine.append(end);
+            }
+        }
+    }
+    std::sort(timeLine.begin(),timeLine.end(),[](const QPair<qreal,EdgeItem*>& p1,
+              const QPair<qreal,EdgeItem*>& p2){return p1.first < p2.first;});
+
+    int nrUsedTracks = 0;
+    QMap<EdgeItem*,int> takenTracks;
+    QMap<EdgeItem*,int> assignedTracks;
+    for(QPair<qreal,EdgeItem*> edge : timeLine) {
+
+        // if we already got that edge. Remove it from the taken tracks
+        if(takenTracks.contains(edge.second)) {
+            takenTracks.remove(edge.second);
+            continue;
+        } else {
+            takenTracks.insert(edge.second,0);
+            assignedTracks.insert(edge.second,nrUsedTracks);
+            nrUsedTracks++;
+        }
+
+    }
+
+
+    // Add bends
+    qreal lowestPoint;
+    if(fromTrack == -1) {
+        lowestPoint = 0;
+    } else {
+        lowestPoint = upper.first()->y() + upper.first()->boundingRect().height();
+        for(AbstractNode* node : upper) {
+            lowestPoint = std::max(lowestPoint, node->y() + node->boundingRect().height());
+        }
+        lowestPoint = lowestPoint + 35 + fromTrack*15;
+    }
+
+
+    for(EdgeItem* edge : assignedTracks.keys()) {
+        qreal trackPos = lowestPoint + (15*assignedTracks.value(edge));
+        QPointF first(edge->getFrom()->getOutport().x(),trackPos);
+        QPointF second(edge->getTo()->getInport().x(),trackPos);
+        edge->addBend(first);
+        edge->addBend(second);
+    }
+
+    qreal toMove = lowestPoint + nrUsedTracks*15 + 35;
+    for(AbstractNode* node : layer) {
+        node->setY(toMove);
     }
 }
 
@@ -102,13 +200,164 @@ int AltRenderGraph::assignObedTracks(const QList<AbstractNode *> &layer, Graph &
     }
 
     // Assign tracks now
+    // Add all edges to the timeline
+    QList<QPair<qreal,EdgeItem*>> timeLine;
+    for(AbstractNode* from : layer) {
+        for(AbstractNode* to : from->getSuccessors()) {
+            EdgeItem* edge = graph.getReversedEdge(from,to);
 
-    return 0;
+            if(!edge) {
+                continue;
+            }
+
+            if(!edge->getTo()->isObed()) {
+                continue;
+            }
+
+            if(edge->getFrom()->getOutport().x() == edge->getTo()->getInport().x()) {
+                continue;
+            }
+
+            if(qAbs(edge->getFrom()->getOutport().x() - edge->getTo()->getInport().x()) < 2 ) {
+                continue;
+            }
+
+            qreal startPosition(from->getOutport().x());
+            qreal endPosition(to->getInport().x());
+
+            QPair<qreal,EdgeItem*> start(startPosition,edge);
+            QPair<qreal,EdgeItem*> end(endPosition,edge);
+
+            if(!timeLine.contains(start)) {
+                timeLine.append(start);
+            }
+            if(!timeLine.contains(end)) {
+                timeLine.append(end);
+            }
+        }
+    }
+    std::sort(timeLine.begin(),timeLine.end(),[](const QPair<qreal,EdgeItem*>& p1,
+              const QPair<qreal,EdgeItem*>& p2){return p1.first < p2.first;});
+
+    int nrUsedTracks = 0;
+    QMap<EdgeItem*,int> takenTracks;
+    QMap<EdgeItem*,int> assignedTracks;
+    for(QPair<qreal,EdgeItem*> edge : timeLine) {
+
+        // if we already got that edge. Remove it from the taken tracks
+        if(takenTracks.contains(edge.second)) {
+            takenTracks.remove(edge.second);
+            continue;
+        } else {
+            takenTracks.insert(edge.second,0);
+            assignedTracks.insert(edge.second,nrUsedTracks);
+            nrUsedTracks++;
+        }
+
+    }
+
+
+    // Add bends
+    qreal lowestPoint = layer.first()->y() + layer.first()->boundingRect().height();
+    for(AbstractNode* node : layer) {
+        lowestPoint = std::max(lowestPoint, node->y() + node->boundingRect().height());
+    }
+    lowestPoint = lowestPoint + 35;
+
+    // create inverted tracks
+    QList<int> inverted;
+    for(int i=0; i< nrUsedTracks; ++i) {
+        inverted.append(i);
+    }
+    std::reverse(inverted.begin(),inverted.end());
+
+    for(EdgeItem* edge : assignedTracks.keys()) {
+        qreal trackPos = lowestPoint + (15*inverted.at(assignedTracks.value(edge)));
+        QPointF first(edge->getFrom()->getOutport().x(),trackPos);
+        QPointF second(edge->getTo()->getInport().x(),trackPos);
+        edge->addBend(first);
+        edge->addBend(second);
+    }
+
+    return nrUsedTracks;
 }
 
-int AltRenderGraph::assignTracks(const QList<AbstractNode *> &upper, const QList<AbstractNode *> &lower, Graph &graph, int fromTrack)
+int AltRenderGraph::assignTracks(const QList<AbstractNode *> &upper, Graph &graph, int fromTrack)
 {
-    return 0;
+    // Add all edges to the timeline
+    QList<QPair<qreal,EdgeItem*>> timeLine;
+    for(AbstractNode* from : upper) {
+        for(AbstractNode* to : from->getSuccessors()) {
+            EdgeItem* edge = graph.getEdge(from,to);
+
+            if(!edge) {
+                continue;
+            }
+
+            if(edge->getFrom()->getOutport().x() == edge->getTo()->getInport().x()) {
+                continue;
+            }
+
+            if(qAbs(edge->getFrom()->getOutport().x() - edge->getTo()->getInport().x()) < 2 ) {
+                continue;
+            }
+
+            qreal startPosition(from->getOutport().x());
+            qreal endPosition(to->getInport().x());
+
+            QPair<qreal,EdgeItem*> start(startPosition,edge);
+            QPair<qreal,EdgeItem*> end(endPosition,edge);
+
+            if(!timeLine.contains(start)) {
+                timeLine.append(start);
+            }
+            if(!timeLine.contains(end)) {
+                timeLine.append(end);
+            }
+        }
+    }
+    std::sort(timeLine.begin(),timeLine.end(),[](const QPair<qreal,EdgeItem*>& p1,
+              const QPair<qreal,EdgeItem*>& p2){return p1.first < p2.first;});
+
+    int nrUsedTracks = 0;
+    QMap<EdgeItem*,int> takenTracks;
+    QMap<EdgeItem*,int> assignedTracks;
+    for(QPair<qreal,EdgeItem*> edge : timeLine) {
+
+        // if we already got that edge. Remove it from the taken tracks
+        if(takenTracks.contains(edge.second)) {
+            takenTracks.remove(edge.second);
+            continue;
+        } else {
+            takenTracks.insert(edge.second,0);
+            assignedTracks.insert(edge.second,nrUsedTracks);
+            nrUsedTracks++;
+        }
+
+    }
+
+
+    // Add bends
+    qreal lowestPoint = upper.first()->y() + upper.first()->boundingRect().height();
+    for(AbstractNode* node : upper) {
+        lowestPoint = std::max(lowestPoint, node->y() + node->boundingRect().height());
+    }
+    lowestPoint = lowestPoint + 35 + fromTrack*15;
+
+    for(EdgeItem* edge : assignedTracks.keys()) {
+        qreal trackPos = lowestPoint + (15*assignedTracks.value(edge));
+        QPointF first(edge->getFrom()->getOutport().x(),trackPos);
+        QPointF second(edge->getTo()->getInport().x(),trackPos);
+        edge->addBend(first);
+        edge->addBend(second);
+    }
+
+    qreal toMove = lowestPoint + nrUsedTracks*15 + 35;
+    /*for(AbstractNode* node : lower) {
+        node->setY(toMove);
+    }*/
+
+    return fromTrack+nrUsedTracks;
 
 }
 
