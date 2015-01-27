@@ -359,11 +359,6 @@ int AltRenderGraph::assignTracks(const QList<AbstractNode *> &upper, Graph &grap
         edge->addBend(second);
     }
 
-    qreal toMove = lowestPoint + nrUsedTracks*15 + 35;
-    /*for(AbstractNode* node : lower) {
-        node->setY(toMove);
-    }*/
-
     return fromTrack+nrUsedTracks;
 
 }
