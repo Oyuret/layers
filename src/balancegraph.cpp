@@ -19,6 +19,29 @@ void BalanceGraph::run(Graph &graph)
 
     emit setStatusMsg("Balancing graph...");
 
+    // Add an uber node
+    Node* ubernode = new Node("uber",10,10);
+    ubernode->setX(0);
+    ubernode->setY(-100);
+    ubernode->setPositionInLayer(0);
+    for(AbstractNode* node : graph.getLayers().first()) {
+        if(node->getName().compare("1")==0) {
+            continue;
+        }
+        node->addPredecessor(ubernode);
+        ubernode->addSuccessor(node);
+    }
+    QList<AbstractNode*> uberLayer;
+    uberLayer.append(ubernode);
+    graph.getLayers().insert(0,uberLayer);
+    int layeri = 0;
+    for(QList<AbstractNode*> layer : graph.getLayers()) {
+        for(AbstractNode*node : layer) {
+            node->setLayer(layeri);
+        }
+        layeri++;
+    }
+
     // Generate a starting layout
     generateLinearSegments(graph);
     connectLinearSegments(graph);
@@ -179,7 +202,7 @@ void BalanceGraph::initialPositioning(Graph& graph)
             qreal offset = (maxWidth - n->boundingRect().width())/2;
             n->setX(max + offset);
 
-            minPos[n->getLayer()] = n->x() + n->boundingRect().width() + offset + 25;
+            minPos[n->getLayer()] = n->x() + n->boundingRect().width() + offset + 10;
         }
     }
 }
@@ -253,7 +276,7 @@ void BalanceGraph::newSweep(Graph &graph, BalanceGraph::direction direction)
                 }
 
                 // we are touching another node
-                if(right->x() <=  (left->x() + 25 + left->boundingRect().width())) {
+                if(right->x() <=  (left->x() + 10 + left->boundingRect().width())) {
 
                     // if we are about to walk into each other
                     if(leftRegion->getDforce() >= rightRegion->getDforce()) {
@@ -335,7 +358,7 @@ void BalanceGraph::newProcessRegion(Region *region, Graph &graph)
                     continue;
                 }
 
-                double availableMovement = node->x() - (leftNode->x() + leftNode->boundingRect().width() + 25);
+                double availableMovement = node->x() - (leftNode->x() + leftNode->boundingRect().width() + 10);
 
                 if(availableMovement < minMovement) {
                     minMovement = availableMovement;
@@ -357,7 +380,7 @@ void BalanceGraph::newProcessRegion(Region *region, Graph &graph)
                     continue;
                 }
 
-                double availableMovement = rightNode->x() - (node->x() + node->boundingRect().width() + 25);
+                double availableMovement = rightNode->x() - (node->x() + node->boundingRect().width() + 10);
 
                 if(availableMovement < minMovement) {
                     minMovement = availableMovement;

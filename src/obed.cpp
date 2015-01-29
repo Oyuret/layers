@@ -1,7 +1,7 @@
 #include "include/obed.h"
 
 Obed::Obed() :
-    AbstractNode("obed",25,25)
+    AbstractNode("obed",10,10)
 {
 }
 

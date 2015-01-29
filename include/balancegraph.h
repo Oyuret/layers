@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "algorithm.h"
 #include "abstract_node.h"
+#include "node.h"
 
 class Region;
 

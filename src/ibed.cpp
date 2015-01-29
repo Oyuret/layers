@@ -1,7 +1,7 @@
 #include "include/ibed.h"
 
 Ibed::Ibed() :
-    AbstractNode("ibed",25,25)
+    AbstractNode("ibed",10,10)
 {
 }
 

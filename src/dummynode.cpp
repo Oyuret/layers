@@ -1,7 +1,7 @@
 #include "include/dummynode.h"
 
 DummyNode::DummyNode() :
-    AbstractNode("dummy",25,25)
+    AbstractNode("dummy",10,10)
 {
 }
 
